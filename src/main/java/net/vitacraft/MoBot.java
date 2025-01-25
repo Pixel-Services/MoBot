@@ -5,18 +5,16 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import net.vitacraft.api.BotEnvironment;
-import net.vitacraft.api.MBModule;
 import net.vitacraft.api.PrimitiveBotEnvironment;
-import net.vitacraft.api.classloader.ModuleLoader;
 import net.vitacraft.api.config.ConfigLoader;
 import net.vitacraft.api.console.Console;
 import net.vitacraft.exceptions.BotStartupException;
 import net.vitacraft.manager.CommandManager;
 import net.vitacraft.api.console.ConsoleUtil;
+import net.vitacraft.modules.ModuleSystem;
 import org.simpleyaml.configuration.ConfigurationSection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -29,12 +27,12 @@ import java.util.*;
  * </p>
  */
 public class MoBot {
-    private final List<MBModule> modules = new ArrayList<>();
     private final BotEnvironment botEnvironment;
     private final Logger logger;
+    private final ModuleSystem moduleSystem;
     private Console console;
 
-    public MoBot() {
+    public MoBot(String[] args) {
         Instant startTime = Instant.now();
 
         ConsoleUtil.clearConsole();
@@ -48,27 +46,11 @@ public class MoBot {
         // Set up the PrimitiveBotEnvironment and pass in all data available pre enabling
         PrimitiveBotEnvironment primitiveBotEnvironment = new PrimitiveBotEnvironment(builder, this);
 
-        // Create the modules directory if it does not exist
-        createModulesDirectory();
+        // Initialize the ModuleSystem
+        moduleSystem = new ModuleSystem();
 
-        // Load all modules
-        modules.addAll(ModuleLoader.loadModules(System.getProperty("user.dir") + "/modules"));
-        logger.info("Loaded MoBot modules: {}", modules.size());
-
-        // Sort modules based on priority
-        modules.sort(Comparator.comparing(module -> module.getModuleInfo().priority()));
-
-        // Call the preEnable method on all Modules
-        List<String> enabledModules = new ArrayList<>();
-        for (MBModule module : modules) {
-            try {
-                module.preEnable(primitiveBotEnvironment);
-                enabledModules.add(module.getModuleInfo().name());
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-            }
-        }
-        logger.info("Pre-enabled modules: {}", enabledModules);
+        // Pre-enable the modules
+        moduleSystem.preEnable(primitiveBotEnvironment);
 
         // Start the bot and construct the ShardManager
         ShardManager shardManager;
@@ -90,16 +72,8 @@ public class MoBot {
         // Register the CommandManager
         shardManager.addEventListener(commandManager);
 
-        // Call the onEnable method on all Modules
-        for (MBModule module : modules) {
-            module.setBotEnvironment(botEnvironment);
-            try {
-                module.onEnable();
-                logger.info("Successfully Enabled module {}", module.getModuleInfo().name() + " by " + module.getModuleInfo().authors());
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-            }
-        }
+        //Enable the modules
+        moduleSystem.onEnable();
 
         // Initialize the Console
         console = new Console(this);
@@ -156,33 +130,17 @@ public class MoBot {
         return shardManager;
     }
 
-    private void createModulesDirectory() {
-        File modulesDir = new File("modules");
-        if (!modulesDir.exists()) {
-            boolean created = modulesDir.mkdirs();
-            if (created) {
-                logger.info("Created modules directory.");
-            } else {
-                logger.error("Failed to create modules directory.");
-            }
-        }
-    }
-
     public void shutdown() {
         logger.info("Shutting down MoBot...");
 
-        for (MBModule module : modules) {
-            module.onDisable();
-        }
+        moduleSystem.preDisable();
 
         if (botEnvironment != null && botEnvironment.getShardManager() != null) {
             botEnvironment.getShardManager().shutdown();
             logger.info("Shard manager has been shut down.");
         }
 
-        for (MBModule module : modules) {
-            module.postDisable();
-        }
+        moduleSystem.onDisable();
 
         logger.info("See you soon!.");
     }
@@ -196,7 +154,11 @@ public class MoBot {
     }
 
     public static void main(String[] args) {
-        MoBot bot = new MoBot();
+        MoBot bot = new MoBot(args);
         Runtime.getRuntime().addShutdownHook(new Thread(bot::shutdown));
+    }
+
+    private boolean containsArg(String[] args, String target){
+        return Arrays.stream(args).toList().contains(target);
     }
 }
