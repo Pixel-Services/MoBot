@@ -1,4 +1,4 @@
-package net.vitacraft.utils;
+package com.pixelservices.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

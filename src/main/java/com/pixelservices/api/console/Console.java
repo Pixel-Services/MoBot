@@ -1,7 +1,7 @@
-package net.vitacraft.api.console;
+package com.pixelservices.api.console;
 
-import net.vitacraft.MoBot;
-import net.vitacraft.api.config.ConfigLoader;
+import com.pixelservices.MoBot;
+import com.pixelservices.api.config.ConfigLoader;
 import org.simpleyaml.configuration.ConfigurationSection;
 import org.slf4j.Logger;
 import java.util.HashMap;

@@ -1,7 +1,7 @@
-package net.vitacraft.modules;
+package com.pixelservices.modules;
 
-import net.vitacraft.api.PrimitiveBotEnvironment;
-import net.vitacraft.api.info.ModuleInfo;
+import com.pixelservices.api.PrimitiveBotEnvironment;
+import com.pixelservices.api.info.ModuleInfo;
 import org.pf4j.*;
 import org.simpleyaml.configuration.file.YamlFile;
 

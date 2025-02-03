@@ -1,6 +1,6 @@
-package net.vitacraft.modules;
+package com.pixelservices.modules;
 
-import net.vitacraft.api.PrimitiveBotEnvironment;
+import com.pixelservices.api.PrimitiveBotEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

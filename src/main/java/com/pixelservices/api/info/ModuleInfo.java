@@ -1,4 +1,4 @@
-package net.vitacraft.api.info;
+package com.pixelservices.api.info;
 
 import java.util.List;
 

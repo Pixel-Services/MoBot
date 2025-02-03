@@ -1,8 +1,8 @@
-package net.vitacraft.api;
+package com.pixelservices.api;
 
+import com.pixelservices.MoBot;
+import com.pixelservices.manager.CommandManager;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import net.vitacraft.MoBot;
-import net.vitacraft.manager.CommandManager;
 
 /**
  * The {@code BotEnvironment} class encapsulates the core components required to operate

@@ -1,4 +1,4 @@
-package net.vitacraft.exceptions;
+package com.pixelservices.exceptions;
 
 /**
  * Exception thrown when a circular dependency is detected in the dependency graph.

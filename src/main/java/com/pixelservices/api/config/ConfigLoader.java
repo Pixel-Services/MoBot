@@ -1,4 +1,4 @@
-package net.vitacraft.api.config;
+package com.pixelservices.api.config;
 import org.simpleyaml.configuration.file.FileConfiguration;
 import org.simpleyaml.configuration.file.YamlConfiguration;
 import java.io.File;

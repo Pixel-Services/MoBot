@@ -1,17 +1,17 @@
-package net.vitacraft;
+package com.pixelservices;
 
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import net.vitacraft.api.BotEnvironment;
-import net.vitacraft.api.PrimitiveBotEnvironment;
-import net.vitacraft.api.config.ConfigLoader;
-import net.vitacraft.api.console.Console;
-import net.vitacraft.exceptions.BotStartupException;
-import net.vitacraft.manager.CommandManager;
-import net.vitacraft.api.console.ConsoleUtil;
-import net.vitacraft.modules.ModuleSystem;
+import com.pixelservices.api.BotEnvironment;
+import com.pixelservices.api.PrimitiveBotEnvironment;
+import com.pixelservices.api.config.ConfigLoader;
+import com.pixelservices.api.console.Console;
+import com.pixelservices.exceptions.BotStartupException;
+import com.pixelservices.manager.CommandManager;
+import com.pixelservices.api.console.ConsoleUtil;
+import com.pixelservices.modules.ModuleSystem;
 import org.simpleyaml.configuration.ConfigurationSection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
