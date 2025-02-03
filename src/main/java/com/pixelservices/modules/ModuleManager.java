@@ -1,6 +1,7 @@
 package com.pixelservices.modules;
 
-import com.pixelservices.api.PrimitiveBotEnvironment;
+import com.pixelservices.api.env.BotEnvironment;
+import com.pixelservices.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.plugin.descriptor.finder.YamlDescriptorFinder;
 import com.pixelservices.plugin.lifecycle.PluginState;
 import com.pixelservices.plugin.manager.AbstractPluginManager;
@@ -10,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ModuleManager extends AbstractPluginManager {
     public ModuleManager() {
-        super(Paths.get("modules"), new YamlDescriptorFinder());
+        super(Paths.get("modules"), new YamlDescriptorFinder("module.yml"));
     }
 
     public void preEnable(PrimitiveBotEnvironment primitiveBotEnvironment) {
@@ -20,7 +21,7 @@ public class ModuleManager extends AbstractPluginManager {
             try {
                 if (pluginWrapper.getState().equals(PluginState.LOADED)) {
                     MbModule module = (MbModule) pluginWrapper.getPlugin();
-                    module.injectPrivateBotEnvironment(primitiveBotEnvironment);
+                    module.injectPrimitiveBotEnvironment(primitiveBotEnvironment);
                     module.preEnable();
                 }
             } catch (Throwable e) {
@@ -33,13 +34,14 @@ public class ModuleManager extends AbstractPluginManager {
         logger.info("Successfully pre-enabled " + (getPlugins().size() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
     }
 
-    public void enable() {
+    public void enable(BotEnvironment botEnvironment) {
         AtomicInteger failedCount = new AtomicInteger();
 
         getPlugins().forEach(pluginWrapper -> {
             try {
                 if (pluginWrapper.getState().equals(PluginState.LOADED)) {
                     MbModule module = (MbModule) pluginWrapper.getPlugin();
+                    module.injectBotEnvironment(botEnvironment);
                     module.onEnable();
                 }
             } catch (Throwable e) {

@@ -1,21 +1,5 @@
 <configuration>
-    <!-- Suppress JDA logs -->
-    <logger name="net.dv8tion.jda" level="OFF"/>
-
-    <!-- Adjust the logging level for specific sub-packages if needed -->
-    <logger name="net.dv8tion.jda.api.requests.RestRateLimiter" level="OFF"/>
-    <logger name="net.dv8tion.jda.internal.requests.Requester" level="OFF"/>
-    <logger name="net.dv8tion.jda.internal.entities.EntityBuilder" level="OFF"/>
-
-    <!-- Customize the logging pattern to replace thread name with "MoBot" -->
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>[%date{HH:mm:ss}] %-5level %logger{36}: %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <!-- Default root logger -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
     <root level="OFF">
-        <appender-ref ref="console"/>
     </root>
 </configuration>

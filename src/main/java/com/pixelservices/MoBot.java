@@ -6,8 +6,8 @@ import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import com.pixelservices.api.BotEnvironment;
-import com.pixelservices.api.PrimitiveBotEnvironment;
+import com.pixelservices.api.env.BotEnvironment;
+import com.pixelservices.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.api.config.ConfigLoader;
 import com.pixelservices.api.console.Console;
 import com.pixelservices.exceptions.BotStartupException;
@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  */
 public class MoBot {
-    private final BotEnvironment botEnvironment;
+    private BotEnvironment botEnvironment;
     private final Logger logger;
     private final ModuleManager moduleManager;
     private Console console;
@@ -59,7 +59,6 @@ public class MoBot {
             shardManager = enableBot(builder);
             logger.info("Successfully enabled shard manager with " + shardManager.getShardsTotal() +  " shards.");
         } catch (BotStartupException e) {
-            botEnvironment = null;
             logger.error("Bot startup failed", e);
             return;
         }
@@ -74,7 +73,7 @@ public class MoBot {
         shardManager.addEventListener(commandManager);
 
         //Enable the modules
-        moduleManager.enable();
+        moduleManager.enable(botEnvironment);
 
         // Initialize the Console
         console = new Console(this);

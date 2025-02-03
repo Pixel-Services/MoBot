@@ -1,4 +1,4 @@
-package com.pixelservices.api;
+package com.pixelservices.api.env;
 
 import com.pixelservices.MoBot;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;

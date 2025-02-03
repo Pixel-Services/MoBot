@@ -1,4 +1,4 @@
-package com.pixelservices.api;
+package com.pixelservices.api.env;
 
 import com.pixelservices.MoBot;
 import com.pixelservices.manager.CommandManager;
