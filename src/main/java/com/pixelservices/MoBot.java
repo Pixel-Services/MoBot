@@ -77,6 +77,8 @@ public class MoBot {
         // Initialize the Console
         console = new Console(this);
 
+        ConsoleUtil.clearConsole();
+
         logger.info("MoBot startup completed in " + Duration.between(startTime, Instant.now()).toSeconds() + " seconds.");
     }
 
