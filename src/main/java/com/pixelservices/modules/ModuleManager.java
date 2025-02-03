@@ -33,7 +33,7 @@ public class ModuleManager extends AbstractPluginManager {
             }
         });
 
-        logger.info("Successfully pre-enabled " + (getPlugins().size() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
+        logger.info("Successfully pre-enabled " + (getPlugins().stream().filter(plugin -> plugin.getState().equals(PluginState.LOADED)).count() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
     }
 
     public void enable(BotEnvironment botEnvironment) {
@@ -52,7 +52,7 @@ public class ModuleManager extends AbstractPluginManager {
             }
         });
 
-        logger.info("Successfully enabled " + (getPlugins().size() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
+        logger.info("Successfully enabled " + (getPlugins().stream().filter(plugin -> plugin.getState().equals(PluginState.LOADED)).count() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
     }
 
     public void preDisable() {
@@ -70,7 +70,7 @@ public class ModuleManager extends AbstractPluginManager {
             }
         });
 
-        logger.info("Successfully pre-disabled " + (getPlugins().size() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
+        logger.info("Successfully pre-disabled " + (getPlugins().stream().filter(plugin -> plugin.getState().equals(PluginState.LOADED)).count() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
     }
 
     public void disable() {
@@ -88,7 +88,7 @@ public class ModuleManager extends AbstractPluginManager {
             }
         });
 
-        logger.info("Successfully disabled " + (getPlugins().size() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
+        logger.info("Successfully disabled " + (getPlugins().stream().filter(plugin -> plugin.getState().equals(PluginState.LOADED)).count() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
 
         unloadPlugins();
     }
