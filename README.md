@@ -15,99 +15,70 @@ MoBot is a modular bot framework for Discord. It allows developers to create, ex
 <details>
 <summary><strong>📋 Table of Contents</strong></summary>
 
-- [Setup Project](#setup-project)
 - [Installation](#installation)
 - [Creating a Module](#creating-a-module)
-- [Module Configuration](#module-configuration)
-- [Loading and Managing Modules](#loading-and-managing-modules)
-- [License](#license)
 
 </details>
 
 ---
 
-## Setup Project
+## Installation
+To set up MoBot, download the latest release from the releases page.
+```bash
+java -jar MoBot.jar
+```
 
+
+## Creating a Module
 To create a module for MoBot, follow these steps:
 
 1. **Create a Java Project** (Maven/Gradle):
-  - **Maven:**
-    Add the MoBot dependency in `pom.xml`:
+- **Maven:**
+  Add the MoBot dependency in `pom.xml`:
 
-    ```xml
-    <dependency>
-        <groupId>com.pixelservices</groupId>
-        <artifactId>MoBot</artifactId>
-        <version>VERSION</version> <!-- Replace VERSION -->
-    </dependency>
-    ```
+  ```xml
+  <dependency>
+      <groupId>com.pixelservices</groupId>
+      <artifactId>MoBot</artifactId>
+      <version>VERSION</version> <!-- Replace VERSION -->
+  </dependency>
+  ```
 
-  - **Gradle:**
-    Add the dependency in `build.gradle`:
+- **Gradle:**
+  Add the dependency in `build.gradle`:
 
-    ```gradle
-    dependencies {
-        implementation "com.pixelservices:MoBot:VERSION"  // Replace VERSION
-    }
-    ```
+  ```gradle
+  dependencies {
+      implementation "com.pixelservices:MoBot:VERSION"  // Replace VERSION
+  }
+  ```
 
-   Find the latest version [here](https://maven.pixel-services.com/#/releases/net/vitacraft/MoBot).
+_Find the latest version [here](https://maven.pixel-services.com/#/releases/com/pixelservices/MoBot)._
 
-2. **Create Main Module Class**: Extend the `MBModule` class:
+2. **Create Main Class**: Extend the `MBModule` class and override the `onEnable` and `onDisable` methods:
 
     ```java
-    public class WelcomeModule extends MBModule {
+    public class WelcomeModule extends MbModule {
         @Override
         public void onEnable() {
-            getLogger().info("WelcomeModule enabled!");
+            //Do something
         }
 
         @Override
         public void onDisable() {
-            getLogger().info("WelcomeModule disabled!");
+            //Do something
         }
     }
     ```
 
-3. **Create Service File**: Create `resources/META-INF/services/net.vitacraft.api.MBModule`, and to this file add **one line** to it: the fully qualified name of your main module class, for example:
-
-    ```text
-    com.example.WelcomeModule
-    ```
-
----
-
-## Installation
-
-1. **Install MoBot** by adding it as a dependency in your Maven or Gradle project (see the Setup Project section).
-
-2. **Create `bot.yml`** file inside the `resources` folder to configure your bot:
+3. **Create `module.yml`**: Add a `module.yml` file in the `resources` folder and define the module details:
 
     ```yaml
     name: WelcomeModule
-    version: '1.0.0'
-    description: A Test Module
+    version: 1.0.0
+    main: com.example.WelcomeModule
+    authors: ["author1", "author2"]
+    license: "MIT"
+    description: "A welcome module for MoBot"
     dependencies: []
-    authors: [Your Name]
-    priority: DEFAULT
     ```
-
----
-
-## Creating a Module
-
-1. **Extend `MBModule`**:
-   In your Java class, override `onEnable()` and `onDisable()`:
-
-   ```java
-   public class WelcomeModule extends MBModule {
-       @Override
-       public void onEnable() {
-           getLogger().info("Module enabled!");
-       }
-
-       @Override
-       public void onDisable() {
-           getLogger().info("Module disabled!");
-       }
-   }
