@@ -148,6 +148,10 @@ public class MoBot {
         return console;
     }
 
+    public ModuleManager getModuleManager() {
+        return moduleManager;
+    }
+
     public static void main(String[] args) {
         MoBot bot = new MoBot(args);
         Runtime.getRuntime().addShutdownHook(new Thread(bot::shutdown));

@@ -2,11 +2,13 @@ package com.pixelservices.modules;
 
 import com.pixelservices.api.env.BotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
+import com.pixelservices.plugin.PluginWrapper;
 import com.pixelservices.plugin.descriptor.finder.YamlDescriptorFinder;
 import com.pixelservices.plugin.lifecycle.PluginState;
 import com.pixelservices.plugin.manager.AbstractPluginManager;
 
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ModuleManager extends AbstractPluginManager {
@@ -89,5 +91,9 @@ public class ModuleManager extends AbstractPluginManager {
         logger.info("Successfully disabled " + (getPlugins().size() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
 
         unloadPlugins();
+    }
+
+    public List<PluginWrapper> getModules() {
+        return getPlugins();
     }
 }
