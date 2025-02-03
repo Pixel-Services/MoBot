@@ -1,7 +1,7 @@
 package com.pixelservices.api.console;
 
 import com.pixelservices.MoBot;
-import com.pixelservices.api.config.ConfigLoader;
+import com.pixelservices.config.ConfigLoader;
 import com.pixelservices.logger.Logger;
 import org.simpleyaml.configuration.ConfigurationSection;
 

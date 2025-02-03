@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import com.pixelservices.api.env.BotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
-import com.pixelservices.api.config.ConfigLoader;
+import com.pixelservices.config.ConfigLoader;
 import com.pixelservices.api.console.Console;
 import com.pixelservices.exceptions.BotStartupException;
 import com.pixelservices.manager.CommandManager;

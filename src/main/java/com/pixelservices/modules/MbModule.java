@@ -3,13 +3,8 @@ package com.pixelservices.modules;
 import com.pixelservices.api.env.BotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.api.addons.SlashCommandAddon;
-import com.pixelservices.api.config.ConfigLoader;
 import com.pixelservices.plugin.Plugin;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class MbModule extends Plugin {
     private PrimitiveBotEnvironment botEnvironment;
@@ -117,49 +112,9 @@ public class MbModule extends Plugin {
     }
 
     /**
-     * Returns the {@link ConfigLoader} for this module.
-     *
-     * @return the {@link ConfigLoader} instance
-     */
-    public ConfigLoader getConfigLoader() {
-        return generateConfig("config.yml");
-    }
-
-    /**
-     * Returns a {@link ConfigLoader} instance for the specified resource file.
-     *
-     * @param resourceName the name of the resource file (e.g., "options.yml").
-     * @return a {@link ConfigLoader} instance for the specified resource file
-     */
-    public ConfigLoader getConfigLoader(String resourceName) {
-        return generateConfig(resourceName);
-    }
-
-    /**
      * Saves the default configuration file for the module.
      */
     protected void saveDefaultConfig() {
-        ConfigLoader configLoader = getConfigLoader();
-        if (configLoader != null) {
-            configLoader.save();
-        } else {
-            getLogger().error("Failed to save default configuration: No configuration file found.");
-        }
-    }
-
-    /**
-     * Generates a configuration file for the module.
-     *
-     * @return a {@link ConfigLoader} instance of the generated configuration file
-     */
-    private ConfigLoader generateConfig(String resourceName) {
-        try {
-            Path configDir = Paths.get("modules" + "/" + getMetaData().getPluginId());
-            Files.createDirectories(configDir);
-            return new ConfigLoader(this.getClass(), resourceName, configDir);
-        } catch (Exception e) {
-            getLogger().error("Failed to generate configuration", e);
-        }
-        return null;
+        getDefaultConfig().save();
     }
 }
