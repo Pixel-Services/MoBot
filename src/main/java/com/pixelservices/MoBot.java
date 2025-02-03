@@ -1,5 +1,6 @@
 package com.pixelservices;
 
+import com.pixelservices.config.YamlConfig;
 import com.pixelservices.logger.Logger;
 import com.pixelservices.logger.LoggerFactory;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
@@ -8,13 +9,11 @@ import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import com.pixelservices.api.env.BotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
-import com.pixelservices.config.ConfigLoader;
 import com.pixelservices.api.console.Console;
 import com.pixelservices.exceptions.BotStartupException;
 import com.pixelservices.manager.CommandManager;
 import com.pixelservices.api.console.ConsoleUtil;
 import com.pixelservices.modules.ModuleManager;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -82,18 +81,14 @@ public class MoBot {
     }
 
     private DefaultShardManagerBuilder getBuilder() {
-        ConfigLoader configLoader = new ConfigLoader("./bot.yml");
-        configLoader.save();
-        ConfigurationSection config = configLoader.getConfig();
-        String token = config.getString("token");
-        List<String> gateWayIntents = config.getStringList("gateway-intents");
-
+        YamlConfig yamlConfig = new YamlConfig("bot.yml");
+        yamlConfig.save();
+        String token = yamlConfig.getString("token");
+        List<String> gateWayIntents = yamlConfig.getStringList("gateway-intents");
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
-
         for (String intent : gateWayIntents) {
             builder.enableIntents(GatewayIntent.valueOf(intent));
         }
-
         return builder;
     }
 
@@ -101,15 +96,15 @@ public class MoBot {
         ShardManager shardManager = null;
         Scanner scanner = new Scanner(System.in);
 
-        ConfigLoader configLoader = new ConfigLoader("./bot.yml");
-        ConfigurationSection config = configLoader.getConfig();
-        String token = config.getString("token");
+        YamlConfig yamlConfig = new YamlConfig("bot.yml");
+
+        String token = yamlConfig.getString("token");
 
         if (token == null || token.isEmpty()) {
             ConsoleUtil.print("No Discord Bot-Token found. This might be your first time running the bot. Please enter a valid bot token: ");
             token = scanner.nextLine();
-            config.set("token", token);
-            configLoader.save();
+            yamlConfig.set("token", token);
+            yamlConfig.save();
             builder.setToken(token);
         }
 
@@ -119,8 +114,8 @@ public class MoBot {
             } catch (InvalidTokenException e) {
                 logger.info("The provided Discord Bot-Token is invalid. Please enter a new token: ");
                 String newToken = scanner.nextLine();
-                config.set("token", newToken);
-                configLoader.save();
+                yamlConfig.set("token", newToken);
+                yamlConfig.save();
                 builder.setToken(newToken);
             } catch (Exception e) {
                 throw new BotStartupException("An unknown error occurred while setting up the shard manager.", e);
