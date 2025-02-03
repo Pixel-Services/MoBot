@@ -1,9 +1,8 @@
 package com.pixelservices.api.console;
 
 import com.pixelservices.MoBot;
-import com.pixelservices.config.ConfigLoader;
+import com.pixelservices.config.YamlConfig;
 import com.pixelservices.logger.Logger;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,10 +61,9 @@ public class Console {
                 return;
             }
             String token = args[0];
-            ConfigLoader configLoader = new ConfigLoader("./bot.yml");
-            ConfigurationSection config = configLoader.getConfig();
-            config.set("token", token);
-            configLoader.save();
+            YamlConfig yamlConfig = new YamlConfig("./bot.yml");
+            yamlConfig.set("token", token);
+            yamlConfig.save();
             logger.info("Token set to: " + token);
         });
     }
