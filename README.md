@@ -55,7 +55,7 @@ To create a module for MoBot, follow these steps:
 
 _Find the latest version [here](https://maven.pixel-services.com/#/releases/com/pixelservices/MoBot)._
 
-2. **Create Main Class**: Extend the `MBModule` class and override the `onEnable` and `onDisable` methods:
+2. **Create Main Class**: Extend the `MbModule` class and override the `onEnable` and `onDisable` methods:
 
     ```java
     public class WelcomeModule extends MbModule {
