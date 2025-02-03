@@ -5,7 +5,7 @@
 
     <groupId>com.pixelservices</groupId>
     <artifactId>MoBot</artifactId>
-    <version>0.3.2a-ALPHA</version>
+    <version>0.3.3</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
