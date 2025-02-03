@@ -1,82 +1,91 @@
 package com.pixelservices.modules;
 
 import com.pixelservices.api.PrimitiveBotEnvironment;
-import com.pixelservices.api.info.ModuleInfo;
-import org.pf4j.*;
-import org.simpleyaml.configuration.file.YamlFile;
+import com.pixelservices.plugin.descriptor.finder.YamlDescriptorFinder;
+import com.pixelservices.plugin.lifecycle.PluginState;
+import com.pixelservices.plugin.manager.AbstractPluginManager;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class ModuleManager extends DefaultPluginManager {
-
+public class ModuleManager extends AbstractPluginManager {
     public ModuleManager() {
-        super(Paths.get("modules"));
+        super(Paths.get("modules"), new YamlDescriptorFinder());
     }
 
-    @Override
-    protected PluginLoader createPluginLoader() {
-        return new JarPluginLoader(this);
+    public void preEnable(PrimitiveBotEnvironment primitiveBotEnvironment) {
+        AtomicInteger failedCount = new AtomicInteger();
+
+        getPlugins().forEach(pluginWrapper -> {
+            try {
+                if (pluginWrapper.getState().equals(PluginState.LOADED)) {
+                    MbModule module = (MbModule) pluginWrapper.getPlugin();
+                    module.injectPrivateBotEnvironment(primitiveBotEnvironment);
+                    module.preEnable();
+                }
+            } catch (Throwable e) {
+                logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during pre-enable", e);
+                failedCount.getAndIncrement();
+                unloadPlugin(pluginWrapper.getPluginDescriptor().getPluginId());
+            }
+        });
+
+        logger.info("Successfully pre-enabled " + (getPlugins().size() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
     }
 
-    @Override
-    protected PluginWrapper loadPluginFromPath(Path pluginPath) {
-        // Load module.yml
-        YamlFile yamlFile = new YamlFile(pluginPath.resolve("module.yml").toFile());
-        try {
-            yamlFile.load();
-        } catch (Exception e) {
-            throw new PluginRuntimeException("Failed to load module.yml", e);
-        }
+    public void enable() {
+        AtomicInteger failedCount = new AtomicInteger();
 
-        // Create ModuleInfo
-        ModuleInfo moduleInfo = new ModuleInfo(
-                yamlFile.getString("name"),
-                yamlFile.getString("version"),
-                yamlFile.getString("description"),
-                yamlFile.getStringList("authors"),
-                yamlFile.getStringList("dependencies"),
-        );
+        getPlugins().forEach(pluginWrapper -> {
+            try {
+                if (pluginWrapper.getState().equals(PluginState.LOADED)) {
+                    MbModule module = (MbModule) pluginWrapper.getPlugin();
+                    module.onEnable();
+                }
+            } catch (Throwable e) {
+                logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during enable", e);
+                failedCount.getAndIncrement();
+            }
+        });
 
-        // Create PluginWrapper
-        PluginClassLoader pluginClassLoader = new PluginClassLoader(this, pluginDescriptor, getClass().getClassLoader());
-        PluginWrapper pluginWrapper = new PluginWrapper(this, pluginDescriptor, pluginPath, pluginClassLoader);
-
-        // Ensure the plugin is an instance of MbModuleAdapter
-        if (!(pluginWrapper.getPlugin() instanceof MbModuleAdapter)) {
-            throw new PluginRuntimeException("Loaded plugin is not an instance of MbModuleAdapter");
-        }
-
-        return pluginWrapper;
-    }
-
-    public void preEnable(PrimitiveBotEnvironment environment) {
-        for (PluginWrapper plugin : getPlugins()) {
-            MbModuleAdapter module = (MbModuleAdapter) plugin.getPlugin();
-            module.preEnable(environment);
-        }
-    }
-
-    @Override
-    public void startPlugins() {
-        for (PluginWrapper plugin : getPlugins()) {
-            MbModuleAdapter module = (MbModuleAdapter) plugin.getPlugin();
-            module.start();
-        }
+        logger.info("Successfully enabled " + (getPlugins().size() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
     }
 
     public void preDisable() {
-        for (PluginWrapper plugin : getPlugins()) {
-            MbModuleAdapter module = (MbModuleAdapter) plugin.getPlugin();
-            module.preDisable();
-        }
+        AtomicInteger failedCount = new AtomicInteger();
+
+        getPlugins().forEach(pluginWrapper -> {
+            try {
+                if (pluginWrapper.getState().equals(PluginState.LOADED)) {
+                    MbModule module = (MbModule) pluginWrapper.getPlugin();
+                    module.preDisable();
+                }
+            } catch (Throwable e) {
+                logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during pre-disable", e);
+                failedCount.getAndIncrement();
+            }
+        });
+
+        logger.info("Successfully pre-disabled " + (getPlugins().size() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
     }
 
-    @Override
-    public void stopPlugins() {
-        for (PluginWrapper plugin : getPlugins()) {
-            MbModuleAdapter module = (MbModuleAdapter) plugin.getPlugin();
-            module.stop();
-        }
+    public void disable() {
+        AtomicInteger failedCount = new AtomicInteger();
+
+        getPlugins().forEach(pluginWrapper -> {
+            try {
+                if (pluginWrapper.getState().equals(PluginState.LOADED)) {
+                    MbModule module = (MbModule) pluginWrapper.getPlugin();
+                    module.onDisable();
+                }
+            } catch (Throwable e) {
+                logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during disable", e);
+                failedCount.getAndIncrement();
+            }
+        });
+
+        logger.info("Successfully disabled " + (getPlugins().size() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
+
+        unloadPlugins();
     }
 }

@@ -1,5 +1,7 @@
 package com.pixelservices;
 
+import com.pixelservices.logger.Logger;
+import com.pixelservices.logger.LoggerFactory;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
@@ -11,10 +13,9 @@ import com.pixelservices.api.console.Console;
 import com.pixelservices.exceptions.BotStartupException;
 import com.pixelservices.manager.CommandManager;
 import com.pixelservices.api.console.ConsoleUtil;
-import com.pixelservices.modules.ModuleSystem;
+import com.pixelservices.modules.ModuleManager;
 import org.simpleyaml.configuration.ConfigurationSection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -29,7 +30,7 @@ import java.util.*;
 public class MoBot {
     private final BotEnvironment botEnvironment;
     private final Logger logger;
-    private final ModuleSystem moduleSystem;
+    private final ModuleManager moduleManager;
     private Console console;
 
     public MoBot(String[] args) {
@@ -47,19 +48,19 @@ public class MoBot {
         PrimitiveBotEnvironment primitiveBotEnvironment = new PrimitiveBotEnvironment(builder, this);
 
         // Initialize the ModuleSystem
-        moduleSystem = new ModuleSystem();
+        moduleManager = new ModuleManager();
 
         // Pre-enable the modules
-        moduleSystem.preEnable(primitiveBotEnvironment);
+        moduleManager.preEnable(primitiveBotEnvironment);
 
         // Start the bot and construct the ShardManager
         ShardManager shardManager;
         try {
             shardManager = enableBot(builder);
-            logger.info("Successfully enabled shard manager with {} shards.", shardManager.getShardsTotal());
+            logger.info("Successfully enabled shard manager with " + shardManager.getShardsTotal() +  " shards.");
         } catch (BotStartupException e) {
             botEnvironment = null;
-            logger.error("Bot startup failed: " + e.getMessage());
+            logger.error("Bot startup failed", e);
             return;
         }
 
@@ -73,12 +74,12 @@ public class MoBot {
         shardManager.addEventListener(commandManager);
 
         //Enable the modules
-        moduleSystem.onEnable();
+        moduleManager.enable();
 
         // Initialize the Console
         console = new Console(this);
 
-        logger.info("MoBot startup completed in {} seconds.", Duration.between(startTime, Instant.now()).toSeconds());
+        logger.info("MoBot startup completed in " + Duration.between(startTime, Instant.now()).toSeconds() + " seconds.");
     }
 
     private DefaultShardManagerBuilder getBuilder() {
@@ -133,14 +134,14 @@ public class MoBot {
     public void shutdown() {
         logger.info("Shutting down MoBot...");
 
-        moduleSystem.preDisable();
+        moduleManager.preDisable();
 
         if (botEnvironment != null && botEnvironment.getShardManager() != null) {
             botEnvironment.getShardManager().shutdown();
             logger.info("Shard manager has been shut down.");
         }
 
-        moduleSystem.onDisable();
+        moduleManager.disable();
 
         logger.info("See you soon!.");
     }

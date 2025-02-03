@@ -1,29 +1,37 @@
 package com.pixelservices.modules;
 
+import com.pixelservices.api.BotEnvironment;
 import com.pixelservices.api.PrimitiveBotEnvironment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.pixelservices.plugin.Plugin;
 
-public abstract class MbModule {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+public class MbModule extends Plugin {
+    private PrimitiveBotEnvironment botEnvironment;
 
-    public Logger getLogger() {
-        return logger;
+    final void injectPrivateBotEnvironment(PrimitiveBotEnvironment botEnvironment) {
+        this.botEnvironment = botEnvironment;
     }
 
-    public void preEnable(PrimitiveBotEnvironment environment) {
-        // Default implementation
+    final void injectBotEnvironment(BotEnvironment botEnvironment) {
+        this.botEnvironment = botEnvironment;
+    }
+
+    public void preEnable() {
+
     }
 
     public void onEnable() {
-        // Default implementation
+
     }
 
     public void preDisable() {
-        // Default implementation
+
     }
 
     public void onDisable() {
-        // Default implementation
+
+    }
+
+    public PrimitiveBotEnvironment getBotEnvironment() {
+        return botEnvironment;
     }
 }

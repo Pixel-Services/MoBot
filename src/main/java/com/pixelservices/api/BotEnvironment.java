@@ -2,6 +2,7 @@ package com.pixelservices.api;
 
 import com.pixelservices.MoBot;
 import com.pixelservices.manager.CommandManager;
+import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
 /**
@@ -17,9 +18,8 @@ import net.dv8tion.jda.api.sharding.ShardManager;
  * </p>
  *
  */
-public class BotEnvironment {
+public class BotEnvironment extends PrimitiveBotEnvironment {
     private final ShardManager shardManager;
-    private final MoBot moBot;
     private final CommandManager commandManager;
 
     /**
@@ -27,12 +27,11 @@ public class BotEnvironment {
      * {@link MoBot} instance, and {@link CommandManager}.
      *
      * @param shardManager    the {@link ShardManager} responsible for managing bot shards
-     * @param moBot           the main instance of {@link MoBot}
      * @param commandManager  the {@link CommandManager} responsible for handling commands
      */
     public BotEnvironment(ShardManager shardManager, MoBot moBot, CommandManager commandManager) {
+        super(null, moBot);
         this.shardManager = shardManager;
-        this.moBot = moBot;
         this.commandManager = commandManager;
     }
 
@@ -45,16 +44,6 @@ public class BotEnvironment {
         return shardManager;
     }
 
-
-    /**
-     * Returns the main instance of {@link MoBot}.
-     *
-     * @return the {@link MoBot} instance
-     */
-    public MoBot getInstance() {
-        return moBot;
-    }
-
     /**
      * Returns the {@link CommandManager} responsible for handling commands.
      *
@@ -62,5 +51,15 @@ public class BotEnvironment {
      */
     public CommandManager getCommandManager() {
         return commandManager;
+    }
+
+    /**
+     * Returns the {@link DefaultShardManagerBuilder} used to configure the shard manager.
+     *
+     * @return the {@link DefaultShardManagerBuilder}
+     */
+    @Override
+    public DefaultShardManagerBuilder getBuilder() {
+        throw new UnsupportedOperationException("BotEnvironment does not support access to the ShardManagerBuilder");
     }
 }
