@@ -158,7 +158,7 @@ public class MoBot {
         Runtime.getRuntime().addShutdownHook(new Thread(bot::shutdown));
     }
 
-    private boolean containsArg(String[] args, String target){
+    private boolean containsArg(String[] args, String target) {
         return Arrays.stream(args).toList().contains(target);
     }
 }

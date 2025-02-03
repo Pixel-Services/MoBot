@@ -136,6 +136,18 @@ public class MbModule extends Plugin {
     }
 
     /**
+     * Saves the default configuration file for the module.
+     */
+    protected void saveDefaultConfig() {
+        ConfigLoader configLoader = getConfigLoader();
+        if (configLoader != null) {
+            configLoader.save();
+        } else {
+            getLogger().error("Failed to save default configuration: No configuration file found.");
+        }
+    }
+
+    /**
      * Generates a configuration file for the module.
      *
      * @return a {@link ConfigLoader} instance of the generated configuration file
@@ -149,17 +161,5 @@ public class MbModule extends Plugin {
             getLogger().error("Failed to generate configuration", e);
         }
         return null;
-    }
-
-    /**
-     * Saves the default configuration file for the module.
-     */
-    private void saveDefaultConfig() {
-        ConfigLoader configLoader = getConfigLoader();
-        if (configLoader != null) {
-            configLoader.save();
-        } else {
-            getLogger().error("Failed to save default configuration: No configuration file found.");
-        }
     }
 }
