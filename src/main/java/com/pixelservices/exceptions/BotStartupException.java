@@ -1,4 +1,4 @@
-package net.vitacraft.exceptions;
+package com.pixelservices.exceptions;
 
 /**
  * Exception thrown when the bot encounters a startup issue.

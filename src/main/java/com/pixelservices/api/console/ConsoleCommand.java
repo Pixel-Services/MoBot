@@ -1,4 +1,4 @@
-package net.vitacraft.api.console;
+package com.pixelservices.api.console;
 
 public interface ConsoleCommand {
     void execute(String[] args);

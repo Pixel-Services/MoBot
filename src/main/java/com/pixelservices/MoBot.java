@@ -1,22 +1,20 @@
-package net.vitacraft;
+package com.pixelservices;
 
+import com.pixelservices.config.YamlConfig;
+import com.pixelservices.logger.Logger;
+import com.pixelservices.logger.LoggerFactory;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import net.vitacraft.api.BotEnvironment;
-import net.vitacraft.api.MBModule;
-import net.vitacraft.api.PrimitiveBotEnvironment;
-import net.vitacraft.api.classloader.ModuleLoader;
-import net.vitacraft.api.config.ConfigLoader;
-import net.vitacraft.api.console.Console;
-import net.vitacraft.exceptions.BotStartupException;
-import net.vitacraft.manager.CommandManager;
-import net.vitacraft.api.console.ConsoleUtil;
-import org.simpleyaml.configuration.ConfigurationSection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.io.File;
+import com.pixelservices.api.env.BotEnvironment;
+import com.pixelservices.api.env.PrimitiveBotEnvironment;
+import com.pixelservices.api.console.Console;
+import com.pixelservices.exceptions.BotStartupException;
+import com.pixelservices.manager.CommandManager;
+import com.pixelservices.api.console.ConsoleUtil;
+import com.pixelservices.modules.ModuleManager;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -29,12 +27,12 @@ import java.util.*;
  * </p>
  */
 public class MoBot {
-    private final List<MBModule> modules = new ArrayList<>();
-    private final BotEnvironment botEnvironment;
+    private BotEnvironment botEnvironment;
     private final Logger logger;
+    private final ModuleManager moduleManager;
     private Console console;
 
-    public MoBot() {
+    public MoBot(String[] args) {
         Instant startTime = Instant.now();
 
         ConsoleUtil.clearConsole();
@@ -48,36 +46,19 @@ public class MoBot {
         // Set up the PrimitiveBotEnvironment and pass in all data available pre enabling
         PrimitiveBotEnvironment primitiveBotEnvironment = new PrimitiveBotEnvironment(builder, this);
 
-        // Create the modules directory if it does not exist
-        createModulesDirectory();
+        // Initialize the ModuleSystem
+        moduleManager = new ModuleManager();
 
-        // Load all modules
-        modules.addAll(ModuleLoader.loadModules(System.getProperty("user.dir") + "/modules"));
-        logger.info("Loaded MoBot modules: {}", modules.size());
-
-        // Sort modules based on priority
-        modules.sort(Comparator.comparing(module -> module.getModuleInfo().priority()));
-
-        // Call the preEnable method on all Modules
-        List<String> enabledModules = new ArrayList<>();
-        for (MBModule module : modules) {
-            try {
-                module.preEnable(primitiveBotEnvironment);
-                enabledModules.add(module.getModuleInfo().name());
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-            }
-        }
-        logger.info("Pre-enabled modules: {}", enabledModules);
+        // Pre-enable the modules
+        moduleManager.preEnable(primitiveBotEnvironment);
 
         // Start the bot and construct the ShardManager
         ShardManager shardManager;
         try {
             shardManager = enableBot(builder);
-            logger.info("Successfully enabled shard manager with {} shards.", shardManager.getShardsTotal());
+            logger.info("Successfully enabled shard manager with " + shardManager.getShardsTotal() +  " shards.");
         } catch (BotStartupException e) {
-            botEnvironment = null;
-            logger.error("Bot startup failed: " + e.getMessage());
+            logger.error("Bot startup failed", e);
             return;
         }
 
@@ -90,36 +71,24 @@ public class MoBot {
         // Register the CommandManager
         shardManager.addEventListener(commandManager);
 
-        // Call the onEnable method on all Modules
-        for (MBModule module : modules) {
-            module.setBotEnvironment(botEnvironment);
-            try {
-                module.onEnable();
-                logger.info("Successfully Enabled module {}", module.getModuleInfo().name() + " by " + module.getModuleInfo().authors());
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-            }
-        }
+        //Enable the modules
+        moduleManager.enable(botEnvironment);
 
         // Initialize the Console
         console = new Console(this);
 
-        logger.info("MoBot startup completed in {} seconds.", Duration.between(startTime, Instant.now()).toSeconds());
+        logger.info("MoBot startup completed in " + Duration.between(startTime, Instant.now()).toSeconds() + " seconds.");
     }
 
     private DefaultShardManagerBuilder getBuilder() {
-        ConfigLoader configLoader = new ConfigLoader("./bot.yml");
-        configLoader.save();
-        ConfigurationSection config = configLoader.getConfig();
-        String token = config.getString("token");
-        List<String> gateWayIntents = config.getStringList("gateway-intents");
-
+        YamlConfig yamlConfig = new YamlConfig("bot.yml");
+        yamlConfig.save();
+        String token = yamlConfig.getString("token");
+        List<String> gateWayIntents = yamlConfig.getStringList("gateway-intents");
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
-
         for (String intent : gateWayIntents) {
             builder.enableIntents(GatewayIntent.valueOf(intent));
         }
-
         return builder;
     }
 
@@ -127,15 +96,15 @@ public class MoBot {
         ShardManager shardManager = null;
         Scanner scanner = new Scanner(System.in);
 
-        ConfigLoader configLoader = new ConfigLoader("./bot.yml");
-        ConfigurationSection config = configLoader.getConfig();
-        String token = config.getString("token");
+        YamlConfig yamlConfig = new YamlConfig("bot.yml");
+
+        String token = yamlConfig.getString("token");
 
         if (token == null || token.isEmpty()) {
             ConsoleUtil.print("No Discord Bot-Token found. This might be your first time running the bot. Please enter a valid bot token: ");
             token = scanner.nextLine();
-            config.set("token", token);
-            configLoader.save();
+            yamlConfig.set("token", token);
+            yamlConfig.save();
             builder.setToken(token);
         }
 
@@ -145,8 +114,8 @@ public class MoBot {
             } catch (InvalidTokenException e) {
                 logger.info("The provided Discord Bot-Token is invalid. Please enter a new token: ");
                 String newToken = scanner.nextLine();
-                config.set("token", newToken);
-                configLoader.save();
+                yamlConfig.set("token", newToken);
+                yamlConfig.save();
                 builder.setToken(newToken);
             } catch (Exception e) {
                 throw new BotStartupException("An unknown error occurred while setting up the shard manager.", e);
@@ -156,33 +125,17 @@ public class MoBot {
         return shardManager;
     }
 
-    private void createModulesDirectory() {
-        File modulesDir = new File("modules");
-        if (!modulesDir.exists()) {
-            boolean created = modulesDir.mkdirs();
-            if (created) {
-                logger.info("Created modules directory.");
-            } else {
-                logger.error("Failed to create modules directory.");
-            }
-        }
-    }
-
     public void shutdown() {
         logger.info("Shutting down MoBot...");
 
-        for (MBModule module : modules) {
-            module.onDisable();
-        }
+        moduleManager.preDisable();
 
         if (botEnvironment != null && botEnvironment.getShardManager() != null) {
             botEnvironment.getShardManager().shutdown();
             logger.info("Shard manager has been shut down.");
         }
 
-        for (MBModule module : modules) {
-            module.postDisable();
-        }
+        moduleManager.disable();
 
         logger.info("See you soon!.");
     }
@@ -196,7 +149,11 @@ public class MoBot {
     }
 
     public static void main(String[] args) {
-        MoBot bot = new MoBot();
+        MoBot bot = new MoBot(args);
         Runtime.getRuntime().addShutdownHook(new Thread(bot::shutdown));
+    }
+
+    private boolean containsArg(String[] args, String target) {
+        return Arrays.stream(args).toList().contains(target);
     }
 }

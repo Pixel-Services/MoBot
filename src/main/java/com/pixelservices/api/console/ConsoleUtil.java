@@ -1,7 +1,7 @@
-package net.vitacraft.api.console;
+package com.pixelservices.api.console;
 
-import net.vitacraft.MoBot;
-import net.vitacraft.utils.AnsiColorUtil;
+import com.pixelservices.MoBot;
+import com.pixelservices.utils.AnsiColorUtil;
 
 public class ConsoleUtil {
 

@@ -36,7 +36,7 @@ To create a module for MoBot, follow these steps:
 
     ```xml
     <dependency>
-        <groupId>net.vitacraft</groupId>
+        <groupId>com.pixelservices</groupId>
         <artifactId>MoBot</artifactId>
         <version>VERSION</version> <!-- Replace VERSION -->
     </dependency>
@@ -47,7 +47,7 @@ To create a module for MoBot, follow these steps:
 
     ```gradle
     dependencies {
-        implementation "net.vitacraft:MoBot:VERSION"  // Replace VERSION
+        implementation "com.pixelservices:MoBot:VERSION"  // Replace VERSION
     }
     ```
 

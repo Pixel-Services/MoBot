@@ -1,7 +1,7 @@
-package net.vitacraft.api;
+package com.pixelservices.api.env;
 
+import com.pixelservices.MoBot;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
-import net.vitacraft.MoBot;
 
 /**
  * Provides a basic bot environment with access to the {@link DefaultShardManagerBuilder}

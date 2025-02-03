@@ -1,4 +1,4 @@
-package net.vitacraft.api.addons;
+package com.pixelservices.api.addons;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.jetbrains.annotations.NotNull;
