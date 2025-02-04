@@ -62,7 +62,7 @@ public class MbModule extends Plugin {
      *
      * @return the {@link BotEnvironment} instance
      */
-    public PrimitiveBotEnvironment getBotEnvironment() {
+    public final PrimitiveBotEnvironment getBotEnvironment() {
         return botEnvironment;
     }
 
@@ -72,7 +72,7 @@ public class MbModule extends Plugin {
      * @param data the {@link CommandData} for the slash command
      * @param addon the {@link SlashCommandAddon} to handle the slash command
      */
-    public void registerSlashCommand(CommandData data, SlashCommandAddon addon){
+    public final void registerSlashCommand(CommandData data, SlashCommandAddon addon){
         if (botEnvironment instanceof BotEnvironment botEnv) {
             botEnv.getCommandManager().registerCommand(data, addon);
         } else {
@@ -85,7 +85,7 @@ public class MbModule extends Plugin {
      *
      * @param listeners the event listeners to be registered
      */
-    public void registerEventListener(Object... listeners){
+    public final void registerEventListener(Object... listeners){
         if (botEnvironment instanceof BotEnvironment botEnv) {
             botEnv.getShardManager().addEventListener(listeners);
         } else {
@@ -114,7 +114,7 @@ public class MbModule extends Plugin {
     /**
      * Saves the default configuration file for the module.
      */
-    protected void saveDefaultConfig() {
+    protected final void saveDefaultConfig() {
         getDefaultConfig().save();
     }
 }
