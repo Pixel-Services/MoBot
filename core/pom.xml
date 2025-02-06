@@ -8,7 +8,7 @@
         <version>0.3.6-ALPHA</version>
     </parent>
 
-    <artifactId>mobot-core</artifactId>
+    <artifactId>mobot</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

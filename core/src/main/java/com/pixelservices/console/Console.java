@@ -13,16 +13,20 @@ import java.util.Scanner;
 
 public class Console {
     private final Map<String, ConsoleCommand> commands = new HashMap<>();
-    private final Scanner scanner = new Scanner(System.in);
+    private final ConsoleUtil consoleUtil;
+    private final Scanner scanner;
     private final Logger logger;
     private final MoBot moBot;
 
     public Console(MoBot moBot) {
-        new Thread(this::listenForCommands).start();
         this.logger = LoggerFactory.getLogger("Console");
+        this.consoleUtil = new ConsoleUtil();
+        this.scanner = new Scanner(System.in);
         this.moBot = moBot;
+        clearConsole();
         registerDefaults();
         logger.info("Registered " + commands.size() + " CLI-commands");
+        new Thread(this::listenForCommands).start();
     }
 
     public void registerCommand(String name, ConsoleCommand command) {
@@ -42,6 +46,10 @@ public class Console {
         }
     }
 
+    public void clearConsole() {
+        consoleUtil.clearConsole();
+    }
+
     private void registerDefaults() {
         registerCommand("help", (args, logger) -> {
             logger.info("Available commands:");
@@ -49,7 +57,7 @@ public class Console {
                 logger.info(" - " + command);
             }
         });
-        registerCommand("clear", (args, logger) -> ConsoleUtil.clearConsole());
+        registerCommand("clear", (args, logger) -> consoleUtil.clearConsole());
         registerCommand("shutdown", (args, logger) -> System.exit(0));
         registerCommand("stop", (args, logger) -> System.exit(0));
         registerCommand("settoken", new SetTokenCommand());

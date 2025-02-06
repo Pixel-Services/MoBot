@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 public class MbModule extends Plugin {
     private BotEnvironment botEnvironment;
+    private RegistryBridge registryBridge;
 
     /**
      * Called before the bot is enabled.
@@ -68,17 +69,13 @@ public class MbModule extends Plugin {
     }
 
     /**
-     * Registers a slash command with the bot's command manager.
+     * Registers a slash command with the bot.
      *
-     * @param data the {@link CommandData} for the slash command
-     * @param addon the {@link SlashCommandAddon} to handle the slash command
+     * @param data the {@link CommandData} for the slash command containing the command name, description, and options for the command
+     * @param addon the {@link SlashCommandAddon} to handle the command interaction
      */
     public final void registerSlashCommand(CommandData data, SlashCommandAddon addon){
-        if (botEnvironment instanceof FinalizedBotEnvironment botEnv) {
-            botEnv.getCommandManager().registerCommand(data, addon);
-        } else {
-            getLogger().error("Failed to register slash command: ShardManager is not available yet. Please register commands after the onEnable method was called.");
-        }
+        registryBridge.registerCommand(data, addon);
     }
 
     /**
@@ -99,8 +96,9 @@ public class MbModule extends Plugin {
      *
      * @param botEnvironment the {@link PrimitiveBotEnvironment} to inject
      */
-    public final void injectPrimitiveBotEnvironment(PrimitiveBotEnvironment botEnvironment) {
+    public final void inject(PrimitiveBotEnvironment botEnvironment, RegistryBridge registryBridge) {
         this.botEnvironment = botEnvironment;
+        this.registryBridge = registryBridge;
     }
 
     /**
@@ -108,7 +106,7 @@ public class MbModule extends Plugin {
      *
      * @param finalizedBotEnvironment the {@link FinalizedBotEnvironment} to inject
      */
-    public final void injectFinalizedBotEnvironment(FinalizedBotEnvironment finalizedBotEnvironment) {
+    public final void finalizeBotEnvironment(FinalizedBotEnvironment finalizedBotEnvironment) {
         this.botEnvironment = finalizedBotEnvironment;
     }
 

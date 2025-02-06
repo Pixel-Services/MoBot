@@ -1,7 +1,9 @@
-package com.pixelservices.api.modules;
+package com.pixelservices.modules;
 
 import com.pixelservices.api.env.FinalizedBotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
+import com.pixelservices.api.modules.MbModule;
+import com.pixelservices.commands.CommandManager;
 import com.pixelservices.plugin.PluginWrapper;
 import com.pixelservices.plugin.descriptor.finder.YamlDescriptorFinder;
 import com.pixelservices.plugin.lifecycle.PluginState;
@@ -16,14 +18,19 @@ public class ModuleManager extends AbstractPluginManager {
         super(Paths.get("modules"), new YamlDescriptorFinder("module.yml"));
     }
 
-    public void preEnable(PrimitiveBotEnvironment primitiveBotEnvironment) {
+    public void preEnable(PrimitiveBotEnvironment primitiveBotEnvironment, CommandManager commandManager) {
+        if (getPlugins().isEmpty()) {
+            logger.warn("No modules found in the modules directory.");
+            return;
+        }
+
         AtomicInteger failedCount = new AtomicInteger();
 
         getPlugins().forEach(pluginWrapper -> {
             try {
                 if (pluginWrapper.getState().equals(PluginState.LOADED)) {
                     MbModule module = (MbModule) pluginWrapper.getPlugin();
-                    module.injectPrimitiveBotEnvironment(primitiveBotEnvironment);
+                    module.inject(primitiveBotEnvironment, new RegistryBridgeImpl(commandManager));
                     module.preEnable();
                 }
             } catch (Throwable e) {
@@ -38,13 +45,17 @@ public class ModuleManager extends AbstractPluginManager {
     }
 
     public void enable(FinalizedBotEnvironment finalizedBotEnvironment) {
+        if (getPlugins().isEmpty()) {
+            return;
+        }
+
         AtomicInteger failedCount = new AtomicInteger();
 
         getPlugins().forEach(pluginWrapper -> {
             try {
                 if (pluginWrapper.getState().equals(PluginState.LOADED)) {
                     MbModule module = (MbModule) pluginWrapper.getPlugin();
-                    module.injectFinalizedBotEnvironment(finalizedBotEnvironment);
+                    module.finalizeBotEnvironment(finalizedBotEnvironment);
                     module.onEnable();
                 }
             } catch (Throwable e) {
@@ -59,6 +70,10 @@ public class ModuleManager extends AbstractPluginManager {
     }
 
     public void preDisable() {
+        if (getPlugins().isEmpty()) {
+            return;
+        }
+
         AtomicInteger failedCount = new AtomicInteger();
 
         getPlugins().forEach(pluginWrapper -> {
@@ -77,6 +92,10 @@ public class ModuleManager extends AbstractPluginManager {
     }
 
     public void disable() {
+        if (getPlugins().isEmpty()) {
+            return;
+        }
+
         AtomicInteger failedCount = new AtomicInteger();
 
         getPlugins().forEach(pluginWrapper -> {

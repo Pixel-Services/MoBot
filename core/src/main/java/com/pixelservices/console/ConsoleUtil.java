@@ -4,14 +4,9 @@ import com.pixelservices.utils.AnsiColorUtil;
 import com.pixelservices.utils.UpdateChecker;
 
 public class ConsoleUtil {
-    private static final UpdateChecker updateChecker = new UpdateChecker();
+    private final UpdateChecker updateChecker = new UpdateChecker();
 
-    public static void print(String message) {
-        String coloredMessage = AnsiColorUtil.applyColors(message);
-        System.out.println(coloredMessage);
-    }
-
-    public static void clearConsole() {
+    public void clearConsole() {
         try {
             final String os = System.getProperty("os.name");
             if (os.contains("Windows")) {
@@ -31,7 +26,7 @@ public class ConsoleUtil {
         generateTitleAscii();
     }
 
-    private static void generateTitleAscii(){
+    private void generateTitleAscii(){
         print("#77DD77  __  __       ____        _   ");
         print("#77DD77 |  \\/  | ___ | __ )  ___ | |_    #FFFFFF-  Vitacraft Development 2024");
         print("#77DD77 | |\\/| |/ _ \\|  _ \\ / _ \\| __|   #FFFFFF-  Version: " + updateChecker.getCurrentVersion());
@@ -40,5 +35,10 @@ public class ConsoleUtil {
         print("  ");
         print("Welcome to the #77DD77MoBot CLI#FFFFFF. Type 'help' to see available commands.");
         print("  ");
+    }
+
+    private void print(String message) {
+        String coloredMessage = AnsiColorUtil.applyColors(message);
+        System.out.println(coloredMessage);
     }
 }

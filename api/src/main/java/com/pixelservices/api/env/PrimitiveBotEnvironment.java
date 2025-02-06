@@ -1,6 +1,5 @@
 package com.pixelservices.api.env;
 
-import com.pixelservices.api.manager.CommandManager;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
@@ -31,11 +30,6 @@ public class PrimitiveBotEnvironment implements BotEnvironment {
     @Override
     public DefaultShardManagerBuilder getBuilder() {
         return builder;
-    }
-
-    @Override
-    public CommandManager getCommandManager() {
-        throw new UnsupportedOperationException("The BotEnvironment has not yet been finalized and does not support access to the CommandManager");
     }
 
     @Override

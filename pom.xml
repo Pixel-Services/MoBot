@@ -18,6 +18,11 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>pixel-services-releases</id>
+            <name>Pixel Services</name>
+            <url>https://maven.pixel-services.com/releases</url>
+        </repository>
     </repositories>
 
     <dependencyManagement>
@@ -35,9 +40,8 @@
             <dependency>
                 <groupId>com.pixelservices</groupId>
                 <artifactId>PTK</artifactId>
-                <version>1.3.1</version>
+                <version>1.3.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 </project>

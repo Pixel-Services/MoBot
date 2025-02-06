@@ -1,4 +1,4 @@
-package com.pixelservices.api.manager;
+package com.pixelservices.commands;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;

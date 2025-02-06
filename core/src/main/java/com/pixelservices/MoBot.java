@@ -12,9 +12,8 @@ import com.pixelservices.api.env.FinalizedBotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.console.Console;
 import com.pixelservices.exceptions.BotStartupException;
-import com.pixelservices.api.manager.CommandManager;
-import com.pixelservices.console.ConsoleUtil;
-import com.pixelservices.api.modules.ModuleManager;
+import com.pixelservices.commands.CommandManager;
+import com.pixelservices.modules.ModuleManager;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -31,12 +30,13 @@ public class MoBot {
     private FinalizedBotEnvironment finalizedBotEnvironment;
     private final Logger logger;
     private final ModuleManager moduleManager;
-    private Console console;
+    private final Console console;
 
     public MoBot(String[] args) {
         Instant startTime = Instant.now();
 
-        ConsoleUtil.clearConsole();
+        // Initialize the Console
+        console = new Console(this);
 
         // Initialize the Logger
         logger = LoggerFactory.getLogger("MoBot");
@@ -47,11 +47,14 @@ public class MoBot {
         // Set up the PrimitiveBotEnvironment and pass in all data available pre enabling
         PrimitiveBotEnvironment primitiveBotEnvironment = new PrimitiveBotEnvironment(builder);
 
-        // Initialize the ModuleSystem
+        // Initialize the ModuleManager
         moduleManager = new ModuleManager();
 
+        // Initialize the CommandManager
+        CommandManager commandManager = new CommandManager();
+
         // Pre-enable the modules
-        moduleManager.preEnable(primitiveBotEnvironment);
+        moduleManager.preEnable(primitiveBotEnvironment, commandManager);
 
         // Start the bot and construct the ShardManager
         ShardManager shardManager;
@@ -63,20 +66,14 @@ public class MoBot {
             return;
         }
 
-        // Initialize the CommandManager
-        CommandManager commandManager = new CommandManager();
-
         // Set up the BotEnvironment
-        finalizedBotEnvironment = new FinalizedBotEnvironment(shardManager, commandManager);
+        finalizedBotEnvironment = new FinalizedBotEnvironment(shardManager);
 
         // Register the CommandManager
         shardManager.addEventListener(commandManager);
 
         //Enable the modules
         moduleManager.enable(finalizedBotEnvironment);
-
-        // Initialize the Console
-        console = new Console(this);
 
         // Log the startup time
         logger.info("MoBot startup completed in " + Duration.between(startTime, Instant.now()).toSeconds() + " seconds.");
@@ -146,7 +143,7 @@ public class MoBot {
         String token = yamlConfig.getString("token");
 
         if (token == null || token.isEmpty()) {
-            ConsoleUtil.print("No Discord Bot-Token found. This might be your first time running the bot. Please enter a valid bot token: ");
+            logger.info("No Discord Bot-Token found. This might be your first time running the bot. Please enter a valid bot token: ");
             token = scanner.nextLine();
             yamlConfig.set("token", token);
             yamlConfig.save();

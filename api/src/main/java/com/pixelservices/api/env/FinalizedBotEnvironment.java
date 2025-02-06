@@ -1,14 +1,12 @@
 package com.pixelservices.api.env;
 
-import com.pixelservices.api.manager.CommandManager;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
 /**
  * The {@code BotEnvironment} class encapsulates the core components required to operate
  * a bot within the MoBot system.
- * This class holds references to the {@link ShardManager},
- * the {@link CommandManager} instance, which provides the
+ * This class holds references to the {@link ShardManager}
  * essential environment for managing and executing bot commands.
  * <p>
  * The {@code BotEnvironment} class is immutable, meaning that the components it contains
@@ -19,17 +17,14 @@ import net.dv8tion.jda.api.sharding.ShardManager;
  */
 public class FinalizedBotEnvironment implements BotEnvironment {
     private final ShardManager shardManager;
-    private final CommandManager commandManager;
 
     /**
      * Constructs a new {@code BotEnvironment} object with the specified {@link ShardManager},
      *
      * @param shardManager    the {@link ShardManager} responsible for managing bot shards
-     * @param commandManager  the {@link CommandManager} responsible for handling commands
      */
-    public FinalizedBotEnvironment(ShardManager shardManager, CommandManager commandManager) {
+    public FinalizedBotEnvironment(ShardManager shardManager) {
         this.shardManager = shardManager;
-        this.commandManager = commandManager;
     }
 
     /**
@@ -39,15 +34,6 @@ public class FinalizedBotEnvironment implements BotEnvironment {
      */
     public ShardManager getShardManager() {
         return shardManager;
-    }
-
-    /**
-     * Returns the {@link CommandManager} responsible for handling commands.
-     *
-     * @return the {@link CommandManager}
-     */
-    public CommandManager getCommandManager() {
-        return commandManager;
     }
 
     /**

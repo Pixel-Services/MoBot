@@ -2,7 +2,7 @@ package com.pixelservices.console.impl;
 
 import com.pixelservices.console.ConsoleCommand;
 import com.pixelservices.logger.Logger;
-import com.pixelservices.api.modules.ModuleManager;
+import com.pixelservices.modules.ModuleManager;
 import com.pixelservices.plugin.PluginWrapper;
 import com.pixelservices.plugin.lifecycle.PluginState;
 
