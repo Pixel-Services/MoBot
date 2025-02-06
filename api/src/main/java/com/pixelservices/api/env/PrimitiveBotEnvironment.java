@@ -1,29 +1,26 @@
 package com.pixelservices.api.env;
 
-import com.pixelservices.MoBot;
+import com.pixelservices.api.manager.CommandManager;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 /**
  * Provides a basic bot environment with access to the {@link DefaultShardManagerBuilder}
- * and the instance of {@link MoBot}.
  * <p>
  * This class is used to encapsulate the bot's environment during initialization and module loading,
  * providing access to the shard manager builder and the bot instance.
  * </p>
  */
-public class PrimitiveBotEnvironment {
+public class PrimitiveBotEnvironment implements BotEnvironment {
     private final DefaultShardManagerBuilder builder;
-    private final MoBot moBot;
 
     /**
      * Constructs a new {@link PrimitiveBotEnvironment} with the specified builder and bot instance.
      *
      * @param builder the {@link DefaultShardManagerBuilder} used to configure the shard manager
-     * @param moBot the instance of {@link MoBot} representing the bot
      */
-    public PrimitiveBotEnvironment(DefaultShardManagerBuilder builder, MoBot moBot) {
+    public PrimitiveBotEnvironment(DefaultShardManagerBuilder builder) {
         this.builder = builder;
-        this.moBot = moBot;
     }
 
     /**
@@ -31,16 +28,18 @@ public class PrimitiveBotEnvironment {
      *
      * @return the {@link DefaultShardManagerBuilder}
      */
+    @Override
     public DefaultShardManagerBuilder getBuilder() {
         return builder;
     }
 
-    /**
-     * Returns the instance of {@link MoBot} representing the bot.
-     *
-     * @return the {@link MoBot} instance
-     */
-    public MoBot getInstance() {
-        return moBot;
+    @Override
+    public CommandManager getCommandManager() {
+        throw new UnsupportedOperationException("The BotEnvironment has not yet been finalized and does not support access to the CommandManager");
+    }
+
+    @Override
+    public ShardManager getShardManager() {
+        throw new UnsupportedOperationException("The BotEnvironment has not yet been finalized and does not support access to the ShardManager");
     }
 }

@@ -1,6 +1,6 @@
-package com.pixelservices.modules;
+package com.pixelservices.api.modules;
 
-import com.pixelservices.api.env.BotEnvironment;
+import com.pixelservices.api.env.FinalizedBotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.plugin.PluginWrapper;
 import com.pixelservices.plugin.descriptor.finder.YamlDescriptorFinder;
@@ -37,14 +37,14 @@ public class ModuleManager extends AbstractPluginManager {
         logger.info("Successfully pre-enabled " + (getPlugins().stream().filter(plugin -> plugin.getState().equals(PluginState.LOADED)).count() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
     }
 
-    public void enable(BotEnvironment botEnvironment) {
+    public void enable(FinalizedBotEnvironment finalizedBotEnvironment) {
         AtomicInteger failedCount = new AtomicInteger();
 
         getPlugins().forEach(pluginWrapper -> {
             try {
                 if (pluginWrapper.getState().equals(PluginState.LOADED)) {
                     MbModule module = (MbModule) pluginWrapper.getPlugin();
-                    module.injectBotEnvironment(botEnvironment);
+                    module.injectFinalizedBotEnvironment(finalizedBotEnvironment);
                     module.onEnable();
                 }
             } catch (Throwable e) {

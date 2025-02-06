@@ -5,13 +5,13 @@
 
     <groupId>com.pixelservices</groupId>
     <artifactId>MoBot</artifactId>
-    <version>0.3.5a-ALPHA</version>
+    <version>0.3.6-ALPHA</version>
+    <packaging>pom</packaging>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <modules>
+        <module>core</module>
+        <module>api</module>
+    </modules>
 
     <repositories>
         <repository>
@@ -20,95 +20,24 @@
         </repository>
     </repositories>
 
-    <distributionManagement>
-        <repository>
-            <id>Pixel-Services</id>
-            <url>https://maven.pixel-services.com/releases</url>
-        </repository>
-    </distributionManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.dv8tion</groupId>
+                <artifactId>JDA</artifactId>
+                <version>5.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.5.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.pixelservices</groupId>
+                <artifactId>PTK</artifactId>
+                <version>1.3.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>net.dv8tion</groupId>
-            <artifactId>JDA</artifactId>
-            <version>5.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.5.6</version>
-        </dependency>
-        <dependency>
-            <groupId>com.pixelservices</groupId>
-            <artifactId>PTK</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20231013</version>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Main-Class>com.pixelservices.MoBot</Main-Class>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>resources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>

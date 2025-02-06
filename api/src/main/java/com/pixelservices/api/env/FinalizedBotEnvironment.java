@@ -1,7 +1,6 @@
 package com.pixelservices.api.env;
 
-import com.pixelservices.MoBot;
-import com.pixelservices.manager.CommandManager;
+import com.pixelservices.api.manager.CommandManager;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
@@ -9,7 +8,7 @@ import net.dv8tion.jda.api.sharding.ShardManager;
  * The {@code BotEnvironment} class encapsulates the core components required to operate
  * a bot within the MoBot system.
  * This class holds references to the {@link ShardManager},
- * the {@link MoBot} instance, and the {@link CommandManager}, which together provide the
+ * the {@link CommandManager} instance, which provides the
  * essential environment for managing and executing bot commands.
  * <p>
  * The {@code BotEnvironment} class is immutable, meaning that the components it contains
@@ -18,19 +17,17 @@ import net.dv8tion.jda.api.sharding.ShardManager;
  * </p>
  *
  */
-public class BotEnvironment extends PrimitiveBotEnvironment {
+public class FinalizedBotEnvironment implements BotEnvironment {
     private final ShardManager shardManager;
     private final CommandManager commandManager;
 
     /**
      * Constructs a new {@code BotEnvironment} object with the specified {@link ShardManager},
-     * {@link MoBot} instance, and {@link CommandManager}.
      *
      * @param shardManager    the {@link ShardManager} responsible for managing bot shards
      * @param commandManager  the {@link CommandManager} responsible for handling commands
      */
-    public BotEnvironment(ShardManager shardManager, MoBot moBot, CommandManager commandManager) {
-        super(null, moBot);
+    public FinalizedBotEnvironment(ShardManager shardManager, CommandManager commandManager) {
         this.shardManager = shardManager;
         this.commandManager = commandManager;
     }
@@ -60,6 +57,6 @@ public class BotEnvironment extends PrimitiveBotEnvironment {
      */
     @Override
     public DefaultShardManagerBuilder getBuilder() {
-        throw new UnsupportedOperationException("BotEnvironment does not support access to the ShardManagerBuilder");
+        throw new UnsupportedOperationException("The BotEnvironment has already been finalized and does not support access to the DefaultShardManagerBuilder");
     }
 }

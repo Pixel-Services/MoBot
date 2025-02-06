@@ -8,13 +8,13 @@ import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import com.pixelservices.api.env.BotEnvironment;
+import com.pixelservices.api.env.FinalizedBotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
-import com.pixelservices.api.console.Console;
+import com.pixelservices.console.Console;
 import com.pixelservices.exceptions.BotStartupException;
-import com.pixelservices.manager.CommandManager;
-import com.pixelservices.api.console.ConsoleUtil;
-import com.pixelservices.modules.ModuleManager;
+import com.pixelservices.api.manager.CommandManager;
+import com.pixelservices.console.ConsoleUtil;
+import com.pixelservices.api.modules.ModuleManager;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  */
 public class MoBot {
-    private BotEnvironment botEnvironment;
+    private FinalizedBotEnvironment finalizedBotEnvironment;
     private final Logger logger;
     private final ModuleManager moduleManager;
     private Console console;
@@ -45,7 +45,7 @@ public class MoBot {
         DefaultShardManagerBuilder builder = getBuilder();
 
         // Set up the PrimitiveBotEnvironment and pass in all data available pre enabling
-        PrimitiveBotEnvironment primitiveBotEnvironment = new PrimitiveBotEnvironment(builder, this);
+        PrimitiveBotEnvironment primitiveBotEnvironment = new PrimitiveBotEnvironment(builder);
 
         // Initialize the ModuleSystem
         moduleManager = new ModuleManager();
@@ -67,13 +67,13 @@ public class MoBot {
         CommandManager commandManager = new CommandManager();
 
         // Set up the BotEnvironment
-        botEnvironment = new BotEnvironment(shardManager, this, commandManager);
+        finalizedBotEnvironment = new FinalizedBotEnvironment(shardManager, commandManager);
 
         // Register the CommandManager
         shardManager.addEventListener(commandManager);
 
         //Enable the modules
-        moduleManager.enable(botEnvironment);
+        moduleManager.enable(finalizedBotEnvironment);
 
         // Initialize the Console
         console = new Console(this);
@@ -98,8 +98,8 @@ public class MoBot {
 
         moduleManager.preDisable();
 
-        if (botEnvironment != null && botEnvironment.getShardManager() != null) {
-            botEnvironment.getShardManager().shutdown();
+        if (finalizedBotEnvironment != null && finalizedBotEnvironment.getShardManager() != null) {
+            finalizedBotEnvironment.getShardManager().shutdown();
             logger.info("Shard manager has been shut down.");
         }
 

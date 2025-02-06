@@ -1,4 +1,4 @@
-package com.pixelservices.api.console;
+package com.pixelservices.console;
 
 import com.pixelservices.logger.Logger;
 

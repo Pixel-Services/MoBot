@@ -1,6 +1,6 @@
-package com.pixelservices.api.console.impl;
+package com.pixelservices.console.impl;
 
-import com.pixelservices.api.console.ConsoleCommand;
+import com.pixelservices.console.ConsoleCommand;
 import com.pixelservices.config.YamlConfig;
 import com.pixelservices.logger.Logger;
 

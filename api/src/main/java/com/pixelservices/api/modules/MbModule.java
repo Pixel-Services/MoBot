@@ -1,13 +1,14 @@
-package com.pixelservices.modules;
+package com.pixelservices.api.modules;
 
 import com.pixelservices.api.env.BotEnvironment;
+import com.pixelservices.api.env.FinalizedBotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.api.addons.SlashCommandAddon;
 import com.pixelservices.plugin.Plugin;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 public class MbModule extends Plugin {
-    private PrimitiveBotEnvironment botEnvironment;
+    private BotEnvironment botEnvironment;
 
     /**
      * Called before the bot is enabled.
@@ -62,7 +63,7 @@ public class MbModule extends Plugin {
      *
      * @return the {@link BotEnvironment} instance
      */
-    public final PrimitiveBotEnvironment getBotEnvironment() {
+    public final BotEnvironment getBotEnvironment() {
         return botEnvironment;
     }
 
@@ -73,7 +74,7 @@ public class MbModule extends Plugin {
      * @param addon the {@link SlashCommandAddon} to handle the slash command
      */
     public final void registerSlashCommand(CommandData data, SlashCommandAddon addon){
-        if (botEnvironment instanceof BotEnvironment botEnv) {
+        if (botEnvironment instanceof FinalizedBotEnvironment botEnv) {
             botEnv.getCommandManager().registerCommand(data, addon);
         } else {
             getLogger().error("Failed to register slash command: ShardManager is not available yet. Please register commands after the onEnable method was called.");
@@ -86,7 +87,7 @@ public class MbModule extends Plugin {
      * @param listeners the event listeners to be registered
      */
     public final void registerEventListener(Object... listeners){
-        if (botEnvironment instanceof BotEnvironment botEnv) {
+        if (botEnvironment instanceof FinalizedBotEnvironment botEnv) {
             botEnv.getShardManager().addEventListener(listeners);
         } else {
             getLogger().error("Failed to register event listeners: ShardManager is not available yet. Please register listeners after the onEnable method was called.");
@@ -98,17 +99,17 @@ public class MbModule extends Plugin {
      *
      * @param botEnvironment the {@link PrimitiveBotEnvironment} to inject
      */
-    final void injectPrimitiveBotEnvironment(PrimitiveBotEnvironment botEnvironment) {
+    public final void injectPrimitiveBotEnvironment(PrimitiveBotEnvironment botEnvironment) {
         this.botEnvironment = botEnvironment;
     }
 
     /**
-     * Injects the {@link BotEnvironment} into the module.
+     * Injects the {@link FinalizedBotEnvironment} into the module.
      *
-     * @param botEnvironment the {@link BotEnvironment} to inject
+     * @param finalizedBotEnvironment the {@link FinalizedBotEnvironment} to inject
      */
-    final void injectBotEnvironment(BotEnvironment botEnvironment) {
-        this.botEnvironment = botEnvironment;
+    public final void injectFinalizedBotEnvironment(FinalizedBotEnvironment finalizedBotEnvironment) {
+        this.botEnvironment = finalizedBotEnvironment;
     }
 
     /**

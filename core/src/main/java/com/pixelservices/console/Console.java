@@ -1,17 +1,13 @@
-package com.pixelservices.api.console;
+package com.pixelservices.console;
 
 import com.pixelservices.MoBot;
-import com.pixelservices.api.console.impl.ModulesCommand;
-import com.pixelservices.api.console.impl.SetTokenCommand;
-import com.pixelservices.api.console.impl.VersionCommand;
-import com.pixelservices.config.YamlConfig;
+import com.pixelservices.console.impl.ModulesCommand;
+import com.pixelservices.console.impl.SetTokenCommand;
+import com.pixelservices.console.impl.VersionCommand;
 import com.pixelservices.logger.Logger;
 import com.pixelservices.logger.LoggerFactory;
-import com.pixelservices.plugin.PluginWrapper;
-import com.pixelservices.plugin.lifecycle.PluginState;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
