@@ -35,11 +35,11 @@ public class MoBot {
     public MoBot(String[] args) {
         Instant startTime = Instant.now();
 
-        // Initialize the Console
-        console = new Console(this);
-
         // Initialize the Logger
         logger = LoggerFactory.getLogger("MoBot");
+
+        // Initialize the Console
+        console = new Console(this);
 
         // Generate the DefaultShardManagerBuilder without initializing it
         DefaultShardManagerBuilder builder = getBuilder();
@@ -74,6 +74,9 @@ public class MoBot {
 
         //Enable the modules
         moduleManager.enable(finalizedBotEnvironment);
+
+        // Register the default commands
+        console.registerDefaults();
 
         // Log the startup time
         logger.info("MoBot startup completed in " + Duration.between(startTime, Instant.now()).toSeconds() + " seconds.");

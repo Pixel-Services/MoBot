@@ -24,8 +24,6 @@ public class Console {
         this.scanner = new Scanner(System.in);
         this.moBot = moBot;
         clearConsole();
-        registerDefaults();
-        logger.info("Registered " + commands.size() + " CLI-commands");
         new Thread(this::listenForCommands).start();
     }
 
@@ -50,7 +48,7 @@ public class Console {
         consoleUtil.clearConsole();
     }
 
-    private void registerDefaults() {
+    public void registerDefaults() {
         registerCommand("help", (args, logger) -> {
             logger.info("Available commands:");
             for (String command : commands.keySet()) {
@@ -63,6 +61,7 @@ public class Console {
         registerCommand("settoken", new SetTokenCommand());
         registerCommand("modules", new ModulesCommand(moBot.getModuleManager()));
         registerCommand("version", new VersionCommand());
+        logger.info("Registered " + commands.size() + " CLI-commands");
     }
 
     private void listenForCommands() {
