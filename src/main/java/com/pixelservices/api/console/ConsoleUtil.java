@@ -1,9 +1,10 @@
 package com.pixelservices.api.console;
 
-import com.pixelservices.MoBot;
 import com.pixelservices.utils.AnsiColorUtil;
+import com.pixelservices.utils.UpdateChecker;
 
 public class ConsoleUtil {
+    private static final UpdateChecker updateChecker = new UpdateChecker();
 
     public static void print(String message) {
         String coloredMessage = AnsiColorUtil.applyColors(message);
@@ -30,10 +31,10 @@ public class ConsoleUtil {
         generateTitleAscii();
     }
 
-    public static void generateTitleAscii(){
+    private static void generateTitleAscii(){
         print("#77DD77  __  __       ____        _   ");
         print("#77DD77 |  \\/  | ___ | __ )  ___ | |_    #FFFFFF-  Vitacraft Development 2024");
-        print("#77DD77 | |\\/| |/ _ \\|  _ \\ / _ \\| __|   #FFFFFF-  Version: " + MoBot.class.getPackage().getImplementationVersion());
+        print("#77DD77 | |\\/| |/ _ \\|  _ \\ / _ \\| __|   #FFFFFF-  Version: " + updateChecker.getCurrentVersion());
         print("#77DD77 | |  | | (_) | |_) | (_) | |_    #FFFFFF-  Host: " + System.getProperty("os.name"));
         print("#77DD77 |_|  |_|\\___/|____/ \\___/ \\__|   #FFFFFF-  Memory: " + Runtime.getRuntime().maxMemory() / (1024 * 1024));
         print("  ");

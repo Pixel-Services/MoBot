@@ -3,6 +3,7 @@ package com.pixelservices;
 import com.pixelservices.config.YamlConfig;
 import com.pixelservices.logger.Logger;
 import com.pixelservices.logger.LoggerFactory;
+import com.pixelservices.utils.UpdateChecker;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
@@ -77,9 +78,51 @@ public class MoBot {
         // Initialize the Console
         console = new Console(this);
 
-        ConsoleUtil.clearConsole();
-
+        // Log the startup time
         logger.info("MoBot startup completed in " + Duration.between(startTime, Instant.now()).toSeconds() + " seconds.");
+
+        // Check for updates
+        YamlConfig yamlConfig = new YamlConfig("bot.yml");
+        if (yamlConfig.getBoolean("check-updates")) {
+            UpdateChecker updateChecker = new UpdateChecker();
+            if (updateChecker.isLatest()) {
+                logger.info("You are using the latest version of MoBot: " + updateChecker.getCurrentVersion() + ".");
+            } else {
+                logger.info("A new version of MoBot is available: " + updateChecker.getLatestVersion() + ". You are currently on version " + updateChecker.getCurrentVersion() + ".");
+            }
+        }
+    }
+
+    public void shutdown() {
+        logger.info("Shutting down MoBot...");
+
+        moduleManager.preDisable();
+
+        if (botEnvironment != null && botEnvironment.getShardManager() != null) {
+            botEnvironment.getShardManager().shutdown();
+            logger.info("Shard manager has been shut down.");
+        }
+
+        moduleManager.disable();
+
+        logger.info("See you soon!.");
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public Console getConsole() {
+        return console;
+    }
+
+    public ModuleManager getModuleManager() {
+        return moduleManager;
+    }
+
+    public static void main(String[] args) {
+        MoBot bot = new MoBot(args);
+        Runtime.getRuntime().addShutdownHook(new Thread(bot::shutdown));
     }
 
     private DefaultShardManagerBuilder getBuilder() {
@@ -125,38 +168,6 @@ public class MoBot {
         }
 
         return shardManager;
-    }
-
-    public void shutdown() {
-        logger.info("Shutting down MoBot...");
-
-        moduleManager.preDisable();
-
-        if (botEnvironment != null && botEnvironment.getShardManager() != null) {
-            botEnvironment.getShardManager().shutdown();
-            logger.info("Shard manager has been shut down.");
-        }
-
-        moduleManager.disable();
-
-        logger.info("See you soon!.");
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public Console getConsole() {
-        return console;
-    }
-
-    public ModuleManager getModuleManager() {
-        return moduleManager;
-    }
-
-    public static void main(String[] args) {
-        MoBot bot = new MoBot(args);
-        Runtime.getRuntime().addShutdownHook(new Thread(bot::shutdown));
     }
 
     private boolean containsArg(String[] args, String target) {

@@ -1,8 +1,12 @@
 package com.pixelservices.api.console;
 
 import com.pixelservices.MoBot;
+import com.pixelservices.api.console.impl.ModulesCommand;
+import com.pixelservices.api.console.impl.SetTokenCommand;
+import com.pixelservices.api.console.impl.VersionCommand;
 import com.pixelservices.config.YamlConfig;
 import com.pixelservices.logger.Logger;
+import com.pixelservices.logger.LoggerFactory;
 import com.pixelservices.plugin.PluginWrapper;
 import com.pixelservices.plugin.lifecycle.PluginState;
 
@@ -19,10 +23,42 @@ public class Console {
 
     public Console(MoBot moBot) {
         new Thread(this::listenForCommands).start();
-        this.logger = moBot.getLogger();
+        this.logger = LoggerFactory.getLogger("Console");
         this.moBot = moBot;
         registerDefaults();
         logger.info("Registered " + commands.size() + " CLI-commands");
+    }
+
+    public void registerCommand(String name, ConsoleCommand command) {
+        commands.put(name, command);
+    }
+
+    public void dispatchCommand(String name, String[] args) {
+        ConsoleCommand command = commands.get(name);
+        if (command != null) {
+            try {
+                command.execute(args, logger);
+            } catch (Exception e) {
+                logger.error("An error occurred while executing command: " + name, e);
+            }
+        } else {
+            logger.warn("Unknown command: " + name);
+        }
+    }
+
+    private void registerDefaults() {
+        registerCommand("help", (args, logger) -> {
+            logger.info("Available commands:");
+            for (String command : commands.keySet()) {
+                logger.info(" - " + command);
+            }
+        });
+        registerCommand("clear", (args, logger) -> ConsoleUtil.clearConsole());
+        registerCommand("shutdown", (args, logger) -> System.exit(0));
+        registerCommand("stop", (args, logger) -> System.exit(0));
+        registerCommand("settoken", new SetTokenCommand());
+        registerCommand("modules", new ModulesCommand(moBot.getModuleManager()));
+        registerCommand("version", new VersionCommand());
     }
 
     private void listenForCommands() {
@@ -34,57 +70,5 @@ public class Console {
             System.arraycopy(parts, 1, args, 0, args.length);
             dispatchCommand(commandName, args);
         }
-    }
-
-    public void registerCommand(String name, ConsoleCommand command) {
-        commands.put(name, command);
-    }
-
-    public void dispatchCommand(String name, String[] args) {
-        ConsoleCommand command = commands.get(name);
-        if (command != null) {
-            command.execute(args);
-        } else {
-            logger.warn("Unknown command: " + name);
-        }
-    }
-
-    private void registerDefaults() {
-        registerCommand("help", args -> {
-            logger.info("Available commands:");
-            for (String command : commands.keySet()) {
-                logger.info(" - " + command);
-            }
-        });
-        registerCommand("clear", args -> ConsoleUtil.clearConsole());
-        registerCommand("shutdown", args -> System.exit(0));
-        registerCommand("stop", args -> System.exit(0));
-        registerCommand("settoken", args -> {
-            if (args.length == 0) {
-                logger.warn("No token provided.");
-                return;
-            }
-            String token = args[0];
-            YamlConfig yamlConfig = new YamlConfig("./bot.yml");
-            yamlConfig.set("token", token);
-            yamlConfig.save();
-            logger.info("Token set to: " + token);
-        });
-        registerCommand("modules", args -> {
-            List<PluginWrapper> wrappers = moBot.getModuleManager().getModules();
-            if (wrappers.isEmpty()) {
-                logger.info("No modules loaded.");
-                return;
-            }
-            StringBuilder builder = new StringBuilder();
-            builder.append("Modules: ");
-            for (PluginWrapper module : wrappers) {
-                String moduleId = module.getPluginDescriptor().getPluginId();
-                String statusColor = module.getState().equals(PluginState.LOADED) ? "\u001B[32m" : "\u001B[31m";
-                builder.append(statusColor).append(moduleId).append("\u001B[0m").append(", ");
-            }
-            builder.setLength(builder.length() - 2);
-            logger.info(builder.toString());
-        });
     }
 }

@@ -28,8 +28,9 @@ public class ModuleManager extends AbstractPluginManager {
                 }
             } catch (Throwable e) {
                 logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during pre-enable", e);
+                logger.error("Unloading " + pluginWrapper.getPluginDescriptor().getPluginId() + " due to exception during pre-enable.");
+                pluginWrapper.unload();
                 failedCount.getAndIncrement();
-                unloadPlugin(pluginWrapper.getPluginDescriptor().getPluginId());
             }
         });
 
@@ -48,6 +49,8 @@ public class ModuleManager extends AbstractPluginManager {
                 }
             } catch (Throwable e) {
                 logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during enable", e);
+                logger.error("Unloading " + pluginWrapper.getPluginDescriptor().getPluginId() + " due to exception during enable.");
+                pluginWrapper.unload();
                 failedCount.getAndIncrement();
             }
         });

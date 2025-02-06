@@ -13,12 +13,14 @@
 # https://discord.com/developers/applications
 
 # If you have any questions or need help, feel free to join the support server:
-# https://discord.gg/jVEt44wMQz
-
+# https://discord.gg/KTF3Wsk85G
 token: 'TOKEN_HERE'
 
 # Need to enable gateway intents? Place them here.
 # To find out more about intents, visit:
 # https://discord.com/developers/docs/events/gateway#gateway-intents
-
 gateway-intents: []
+
+# Check for updates on startup?
+# This will check for updates on startup by comparing the latest version on GitHub with the current version.
+check-updates: true
