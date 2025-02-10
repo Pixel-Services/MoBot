@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.pixelservices</groupId>
         <artifactId>MoBot</artifactId>
-        <version>0.3.6-ALPHA</version>
+        <version>0.3.6b-ALPHA</version>
     </parent>
 
     <artifactId>mobot</artifactId>
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.pixelservices</groupId>
             <artifactId>mobot-api</artifactId>
-            <version>0.3.6-ALPHA</version>
+            <version>0.3.6b-ALPHA</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>

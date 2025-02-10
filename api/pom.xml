@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.pixelservices</groupId>
         <artifactId>MoBot</artifactId>
-        <version>0.3.6-ALPHA</version>
+        <version>0.3.6b-ALPHA</version>
     </parent>
 
     <artifactId>mobot-api</artifactId>
