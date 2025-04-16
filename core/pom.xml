@@ -4,7 +4,7 @@
 
     <groupId>com.pixelservices</groupId>
     <artifactId>mobot</artifactId>
-    <version>0.3.6b-ALPHA</version>
+    <version>0.3.7-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -37,8 +37,18 @@
         </dependency>
         <dependency>
             <groupId>com.pixelservices</groupId>
-            <artifactId>PTK</artifactId>
-            <version>1.3.2</version>
+            <artifactId>ptkl</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.pixelservices</groupId>
+            <artifactId>ptkp</artifactId>
+            <version>1.3.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.pixelservices</groupId>
+            <artifactId>ptkc</artifactId>
+            <version>1.3.4</version>
         </dependency>
         <dependency>
             <groupId>com.pixelservices</groupId>

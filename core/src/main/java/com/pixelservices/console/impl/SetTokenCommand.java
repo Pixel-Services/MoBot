@@ -1,5 +1,6 @@
 package com.pixelservices.console.impl;
 
+import com.pixelservices.config.ConfigFactory;
 import com.pixelservices.console.ConsoleCommand;
 import com.pixelservices.config.YamlConfig;
 import com.pixelservices.logger.Logger;
@@ -13,7 +14,7 @@ public class SetTokenCommand implements ConsoleCommand {
             return;
         }
         String token = args[0];
-        YamlConfig yamlConfig = new YamlConfig("./bot.yml");
+        YamlConfig yamlConfig = ConfigFactory.getYamlConfig("./bot.yml");
         yamlConfig.set("token", token);
         yamlConfig.save();
         logger.info("Token set to: " + token);

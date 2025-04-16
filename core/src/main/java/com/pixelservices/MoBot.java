@@ -1,5 +1,6 @@
 package com.pixelservices;
 
+import com.pixelservices.config.ConfigFactory;
 import com.pixelservices.config.YamlConfig;
 import com.pixelservices.logger.Logger;
 import com.pixelservices.logger.LoggerFactory;
@@ -82,7 +83,7 @@ public class MoBot {
         logger.info("MoBot startup completed in " + Duration.between(startTime, Instant.now()).toSeconds() + " seconds.");
 
         // Check for updates
-        YamlConfig yamlConfig = new YamlConfig("bot.yml");
+        YamlConfig yamlConfig = ConfigFactory.getYamlConfig("bot.yml");
         if (yamlConfig.getBoolean("check-updates")) {
             UpdateChecker updateChecker = new UpdateChecker();
             if (updateChecker.isLatest()) {
@@ -126,7 +127,7 @@ public class MoBot {
     }
 
     private DefaultShardManagerBuilder getBuilder() {
-        YamlConfig yamlConfig = new YamlConfig("bot.yml");
+        YamlConfig yamlConfig = ConfigFactory.getYamlConfig("bot.yml");
         yamlConfig.save();
         String token = yamlConfig.getString("token");
         List<String> gateWayIntents = yamlConfig.getStringList("gateway-intents");
@@ -141,7 +142,7 @@ public class MoBot {
         ShardManager shardManager = null;
         Scanner scanner = new Scanner(System.in);
 
-        YamlConfig yamlConfig = new YamlConfig("bot.yml");
+        YamlConfig yamlConfig = ConfigFactory.getYamlConfig("bot.yml");
 
         String token = yamlConfig.getString("token");
 

@@ -1,5 +1,6 @@
 package com.pixelservices.utils;
 
+import com.pixelservices.config.ConfigFactory;
 import com.pixelservices.config.YamlConfig;
 import com.pixelservices.logger.Logger;
 import com.pixelservices.logger.LoggerFactory;
@@ -15,7 +16,7 @@ public class UpdateChecker {
     private final String currentVersion;
 
     public UpdateChecker() {
-        YamlConfig config = new YamlConfig("meta.yml");
+        YamlConfig config = ConfigFactory.getYamlConfig("meta.yml");
         currentVersion = config.getString("version");
     }
 
