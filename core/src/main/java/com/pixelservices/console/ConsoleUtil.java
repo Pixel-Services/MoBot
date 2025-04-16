@@ -28,7 +28,7 @@ public class ConsoleUtil {
 
     private void generateTitleAscii(){
         print("#77DD77  __  __       ____        _   ");
-        print("#77DD77 |  \\/  | ___ | __ )  ___ | |_    #FFFFFF-  Vitacraft Development 2024");
+        print("#77DD77 |  \\/  | ___ | __ )  ___ | |_    #FFFFFF-  Pixel Services");
         print("#77DD77 | |\\/| |/ _ \\|  _ \\ / _ \\| __|   #FFFFFF-  Version: " + updateChecker.getCurrentVersion());
         print("#77DD77 | |  | | (_) | |_) | (_) | |_    #FFFFFF-  Host: " + System.getProperty("os.name"));
         print("#77DD77 |_|  |_|\\___/|____/ \\___/ \\__|   #FFFFFF-  Memory: " + Runtime.getRuntime().maxMemory() / (1024 * 1024));
