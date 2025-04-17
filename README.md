@@ -23,11 +23,20 @@ MoBot is a modular bot framework for Discord. It allows developers to create, ex
 ---
 
 ## Installation
-To set up MoBot, download the latest release from the releases page.
+To set up MoBot, download the latest release from the releases page and run it.
 ```bash
 java -jar MoBot.jar
 ```
+On the first run, MoBot will create a `bot.yml` file in the same directory. 
+This file contains all the necessary configurations for the bot. 
+Inside the `bot.yml` file, you will have to set the `token`. 
 
+For more information on Discord Bot Tokens check [here](https://discord.com/developers/docs/topics/oauth2#bot-application-oauth2-url-generator).
+
+Additionally to the `bot.yml` file, MoBot will create a `modules` folder. 
+This folder is where you will place your modules.
+
+Enjoy.
 
 ## Creating a Module
 To create a module for MoBot, follow these steps:
@@ -36,22 +45,22 @@ To create a module for MoBot, follow these steps:
 - **Maven:**
   Add the MoBot dependency in `pom.xml`:
 
-  ```xml
-  <dependency>
-      <groupId>com.pixelservices</groupId>
-      <artifactId>MoBot</artifactId>
-      <version>VERSION</version> <!-- Replace VERSION -->
-  </dependency>
-  ```
+```xml
+<dependency> 
+    <groupId>com.pixelservices</groupId>  
+    <artifactId>mobot-api</artifactId>
+    <version>VERSION</version> <!-- Replace VERSION -->
+</dependency>
+```
 
 - **Gradle:**
   Add the dependency in `build.gradle`:
 
-  ```gradle
-  dependencies {
-      implementation "com.pixelservices:MoBot:VERSION"  // Replace VERSION
-  }
-  ```
+```gradle
+dependencies {
+  implementation "com.pixelservices:mobot-api:VERSION"  // Replace VERSION
+}
+```
 
 _Find the latest version [here](https://maven.pixel-services.com/#/releases/com/pixelservices/MoBot)._
 
