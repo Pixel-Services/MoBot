@@ -66,28 +66,28 @@ _Find the latest version [here](https://maven.pixel-services.com/#/releases/com/
 
 2. **Create Main Class**: Extend the `MbModule` class and override the `onEnable` and `onDisable` methods:
 
-    ```java
-    public class WelcomeModule extends MbModule {
-        @Override
-        public void onEnable() {
-            //Do something
-        }
-
-        @Override
-        public void onDisable() {
-            //Do something
-        }
+```java
+public class WelcomeModule extends MbModule {
+    @Override
+    public void onEnable() {
+        //Do something
     }
-    ```
+
+    @Override
+    public void onDisable() {
+        //Do something
+    }
+}
+```
 
 3. **Create `module.yml`**: Add a `module.yml` file in the `resources` folder and define the module details:
 
-    ```yaml
-    name: WelcomeModule
-    version: 1.0.0
-    main: com.example.WelcomeModule
-    authors: ["author1", "author2"]
-    license: "MIT"
-    description: "A welcome module for MoBot"
-    dependencies: []
-    ```
+```yaml
+name: WelcomeModule
+version: 1.0.0
+main: com.example.WelcomeModule
+authors: ["author1", "author2"]
+license: "MIT"
+description: "A welcome module for MoBot"
+dependencies: []
+```
