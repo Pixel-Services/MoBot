@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * The main class for initializing and managing the MoBot application.
@@ -42,7 +43,8 @@ public class MoBot {
         logger = LoggerFactory.getLogger("MoBot");
 
         // Initialize the Console
-        console = new Console(this);
+        CountDownLatch consoleLatch = new CountDownLatch(1);
+        console = new Console(this, consoleLatch);
 
         // Generate the DefaultShardManagerBuilder without initializing it
         DefaultShardManagerBuilder builder = getBuilder();
@@ -71,6 +73,8 @@ public class MoBot {
 
         // Set up the BotEnvironment
         finalizedBotEnvironment = new FinalizedBotEnvironment(shardManager);
+
+        consoleLatch.countDown();
 
         // Register the CommandManager
         shardManager.addEventListener(commandManager);

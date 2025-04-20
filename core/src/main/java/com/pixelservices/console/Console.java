@@ -10,6 +10,7 @@ import com.pixelservices.logger.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
 
 public class Console {
     private final Map<String, ConsoleCommand> commands = new HashMap<>();
@@ -17,12 +18,14 @@ public class Console {
     private final Scanner scanner;
     private final Logger logger;
     private final MoBot moBot;
+    private final CountDownLatch latch;
 
-    public Console(MoBot moBot) {
+    public Console(MoBot moBot, CountDownLatch latch) {
         this.logger = LoggerFactory.getLogger("Console");
         this.consoleUtil = new ConsoleUtil();
         this.scanner = new Scanner(System.in);
         this.moBot = moBot;
+        this.latch = latch;
         clearConsole();
         new Thread(this::listenForCommands).start();
     }
@@ -59,12 +62,23 @@ public class Console {
         registerCommand("shutdown", (args, logger) -> System.exit(0));
         registerCommand("stop", (args, logger) -> System.exit(0));
         registerCommand("settoken", new SetTokenCommand());
+        registerCommand("modules" , (args, logger) -> {
+            logger.info("Did you mean 'module list'?");
+        });
         registerCommand("module", new ModuleCommand(moBot.getModuleManager()));
         registerCommand("version", new VersionCommand());
         logger.info("Registered " + commands.size() + " CLI-commands");
     }
 
     private void listenForCommands() {
+        try {
+            // Wait for the bot environment to be ready
+            latch.await();
+        } catch (InterruptedException e) {
+            logger.error("Command listener interrupted while waiting for bot environment.", e);
+            return;
+        }
+
         while (moBot.getFinalizedBotEnvironment() != null) {
             String input = scanner.nextLine();
             String[] parts = input.split(" ");
