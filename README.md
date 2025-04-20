@@ -46,6 +46,12 @@ To create a module for MoBot, follow these steps:
   Add the MoBot dependency in `pom.xml`:
 
 ```xml
+<repository>
+  <id>pixel-services-releases</id>
+  <name>Pixel Services</name>
+  <url>https://maven.pixel-services.com/releases</url>
+</repository>
+
 <dependency> 
     <groupId>com.pixelservices</groupId>  
     <artifactId>mobot-api</artifactId>
@@ -57,6 +63,11 @@ To create a module for MoBot, follow these steps:
   Add the dependency in `build.gradle`:
 
 ```gradle
+maven {
+    name "pixelServicesReleases"
+    url "https://maven.pixel-services.com/releases"
+}
+
 dependencies {
   implementation "com.pixelservices:mobot-api:VERSION"  // Replace VERSION
 }
