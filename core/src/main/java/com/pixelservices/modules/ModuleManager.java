@@ -212,6 +212,8 @@ public class ModuleManager extends AbstractPluginManager implements ModuleRegist
 
         try {
             disable(module);
+            module.getPluginWrapper().unload();
+            module.getPluginWrapper().load();
             enable(module);
         } catch (Throwable e) {
             logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during reload", e);
