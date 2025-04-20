@@ -42,10 +42,6 @@ public class MbModule extends Plugin {
 
     }
 
-    public void onReload() {
-
-    }
-
     /**
      * Called before the bot is disabled.
      * <p>
