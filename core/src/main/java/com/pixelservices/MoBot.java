@@ -50,14 +50,14 @@ public class MoBot {
         // Set up the PrimitiveBotEnvironment and pass in all data available pre enabling
         PrimitiveBotEnvironment primitiveBotEnvironment = new PrimitiveBotEnvironment(builder);
 
-        // Initialize the ModuleManager
-        moduleManager = new ModuleManager();
-
         // Initialize the CommandManager
         CommandManager commandManager = new CommandManager();
 
+        // Initialize the ModuleManager
+        moduleManager = new ModuleManager(commandManager);
+
         // Pre-enable the modules
-        moduleManager.preEnable(primitiveBotEnvironment, commandManager);
+        moduleManager.preEnable(primitiveBotEnvironment);
 
         // Start the bot and construct the ShardManager
         ShardManager shardManager;
