@@ -14,7 +14,7 @@ import com.pixelservices.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.console.Console;
 import com.pixelservices.exceptions.BotStartupException;
 import com.pixelservices.commands.CommandManager;
-import com.pixelservices.modules.ModuleManager;
+import com.pixelservices.modules.ModuleManagerImpl;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -30,7 +30,7 @@ import java.util.*;
 public class MoBot {
     private FinalizedBotEnvironment finalizedBotEnvironment;
     private final Logger logger;
-    private final ModuleManager moduleManager;
+    private final ModuleManagerImpl moduleManager;
     private final Console console;
 
     public MoBot(String[] args) {
@@ -48,14 +48,14 @@ public class MoBot {
         // Set up the PrimitiveBotEnvironment and pass in all data available pre enabling
         PrimitiveBotEnvironment primitiveBotEnvironment = new PrimitiveBotEnvironment(builder);
 
-        // Initialize the ModuleManager
-        moduleManager = new ModuleManager();
-
         // Initialize the CommandManager
         CommandManager commandManager = new CommandManager();
 
+        // Initialize the ModuleManager
+        moduleManager = new ModuleManagerImpl(commandManager);
+
         // Pre-enable the modules
-        moduleManager.preEnable(primitiveBotEnvironment, commandManager);
+        moduleManager.preEnable(primitiveBotEnvironment);
 
         // Start the bot and construct the ShardManager
         ShardManager shardManager;
@@ -117,7 +117,7 @@ public class MoBot {
         return console;
     }
 
-    public ModuleManager getModuleManager() {
+    public ModuleManagerImpl getModuleManager() {
         return moduleManager;
     }
 

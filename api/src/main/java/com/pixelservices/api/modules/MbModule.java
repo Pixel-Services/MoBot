@@ -6,12 +6,17 @@ import com.pixelservices.api.env.BotEnvironment;
 import com.pixelservices.api.env.FinalizedBotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.api.commands.SlashCommand;
+import com.pixelservices.api.modules.listener.ListenerBridge;
+import com.pixelservices.api.modules.listener.ModuleListener;
 import com.pixelservices.plugin.Plugin;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 public class MbModule extends Plugin {
+
+    private ModuleManager moduleManager;
     private BotEnvironment botEnvironment;
     private RegistryBridge registryBridge;
+    private ListenerBridge listenerBridge;
 
     /**
      * Called before the bot is enabled.
@@ -34,6 +39,10 @@ public class MbModule extends Plugin {
      *
      */
     public void onEnable() {
+
+    }
+
+    public void onReload() {
 
     }
 
@@ -61,6 +70,10 @@ public class MbModule extends Plugin {
 
     }
 
+    public ModuleManager getModuleManager() {
+        return moduleManager;
+    }
+
     /**
      * Returns the {@link BotEnvironment}.
      *
@@ -68,6 +81,10 @@ public class MbModule extends Plugin {
      */
     public final BotEnvironment getBotEnvironment() {
         return botEnvironment;
+    }
+
+    public ListenerBridge getListenerBridge() {
+        return listenerBridge;
     }
 
     /**
@@ -95,9 +112,16 @@ public class MbModule extends Plugin {
      *
      * @param listeners the event listeners to be registered
      */
-    public final void registerEventListener(Object... listeners){
-        if (botEnvironment instanceof FinalizedBotEnvironment botEnv) {
-            botEnv.getShardManager().addEventListener(listeners);
+    public final void registerEventListener(ModuleListener... listeners){
+        if (listenerBridge != null) {
+            for (ModuleListener listener : listeners) {
+                if(listenerBridge.getListeners().contains(listener)) {
+                    getLogger().warn("Skipping listener: " + listener.getClass().getSimpleName() + ", as it's already registered.");
+                    continue;
+                }
+
+                listenerBridge.registerListener(listener);
+            }
         } else {
             getLogger().error("Failed to register event listeners: Bot is not available yet. Please register listeners after the onEnable method was called.");
         }
@@ -108,7 +132,8 @@ public class MbModule extends Plugin {
      *
      * @param botEnvironment the {@link PrimitiveBotEnvironment} to inject
      */
-    public final void inject(PrimitiveBotEnvironment botEnvironment, RegistryBridge registryBridge) {
+    public final void inject(ModuleManager moduleManager, PrimitiveBotEnvironment botEnvironment, RegistryBridge registryBridge) {
+        this.moduleManager = moduleManager;
         this.botEnvironment = botEnvironment;
         this.registryBridge = registryBridge;
     }
@@ -122,10 +147,19 @@ public class MbModule extends Plugin {
         this.botEnvironment = finalizedBotEnvironment;
     }
 
+    public final void listenerBridge(ListenerBridge listenerBridge) {
+        this.listenerBridge = listenerBridge;
+    }
+
     /**
      * Saves the default configuration file for the module.
      */
     protected final void saveDefaultConfig() {
         getDefaultConfig().save();
     }
+
+    public final String getId() {
+        return getPluginWrapper().getPluginDescriptor().getPluginId();
+    }
+
 }

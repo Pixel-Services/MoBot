@@ -1,7 +1,7 @@
 package com.pixelservices.console;
 
 import com.pixelservices.MoBot;
-import com.pixelservices.console.impl.ModulesCommand;
+import com.pixelservices.console.impl.ModuleCommand;
 import com.pixelservices.console.impl.SetTokenCommand;
 import com.pixelservices.console.impl.VersionCommand;
 import com.pixelservices.logger.Logger;
@@ -59,7 +59,7 @@ public class Console {
         registerCommand("shutdown", (args, logger) -> System.exit(0));
         registerCommand("stop", (args, logger) -> System.exit(0));
         registerCommand("settoken", new SetTokenCommand());
-        registerCommand("modules", new ModulesCommand(moBot.getModuleManager()));
+        registerCommand("module", new ModuleCommand(moBot.getModuleManager()));
         registerCommand("version", new VersionCommand());
         logger.info("Registered " + commands.size() + " CLI-commands");
     }
