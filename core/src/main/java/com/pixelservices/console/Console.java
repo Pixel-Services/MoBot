@@ -65,7 +65,7 @@ public class Console {
     }
 
     private void listenForCommands() {
-        while (true) {
+        while (moBot.getFinalizedBotEnvironment() != null) {
             String input = scanner.nextLine();
             String[] parts = input.split(" ");
             String commandName = parts[0];

@@ -8,9 +8,7 @@
 </div>
 
 ## Overview
-MoBot is a modular bot framework for Discord. It allows developers to create, extend, and manage custom modules that hook into the bot to add rich, interactive features.
-
----
+MoBot is a modular Discord bot with a powerful, feature-rich API that lets developers build custom modules and extend the bot with all kinds of functionality.
 
 <details>
 <summary><strong>📋 Table of Contents</strong></summary>

@@ -1,24 +1,26 @@
 package com.pixelservices;
 
+import com.pixelservices.api.env.FinalizedBotEnvironment;
+import com.pixelservices.api.env.PrimitiveBotEnvironment;
+import com.pixelservices.commands.CommandManager;
 import com.pixelservices.config.ConfigFactory;
 import com.pixelservices.config.YamlConfig;
+import com.pixelservices.console.Console;
+import com.pixelservices.exceptions.BotStartupException;
 import com.pixelservices.logger.Logger;
 import com.pixelservices.logger.LoggerFactory;
+import com.pixelservices.modules.ModuleManagerImpl;
 import com.pixelservices.utils.UpdateChecker;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import com.pixelservices.api.env.FinalizedBotEnvironment;
-import com.pixelservices.api.env.PrimitiveBotEnvironment;
-import com.pixelservices.console.Console;
-import com.pixelservices.exceptions.BotStartupException;
-import com.pixelservices.commands.CommandManager;
-import com.pixelservices.modules.ModuleManagerImpl;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * The main class for initializing and managing the MoBot application.
@@ -28,10 +30,10 @@ import java.util.*;
  * </p>
  */
 public class MoBot {
-    private FinalizedBotEnvironment finalizedBotEnvironment;
     private final Logger logger;
     private final ModuleManagerImpl moduleManager;
     private final Console console;
+    private FinalizedBotEnvironment finalizedBotEnvironment;
 
     public MoBot(String[] args) {
         Instant startTime = Instant.now();
@@ -61,7 +63,7 @@ public class MoBot {
         ShardManager shardManager;
         try {
             shardManager = enableBot(builder);
-            logger.info("Successfully enabled shard manager with " + shardManager.getShardsTotal() +  " shards.");
+            logger.info("Successfully enabled shard manager with " + shardManager.getShardsTotal() + " shards.");
         } catch (BotStartupException e) {
             logger.error("Bot startup failed", e);
             return;
@@ -94,6 +96,11 @@ public class MoBot {
         }
     }
 
+    public static void main(String[] args) {
+        MoBot bot = new MoBot(args);
+        Runtime.getRuntime().addShutdownHook(new Thread(bot::shutdown));
+    }
+
     public void shutdown() {
         logger.info("Shutting down MoBot...");
 
@@ -121,9 +128,8 @@ public class MoBot {
         return moduleManager;
     }
 
-    public static void main(String[] args) {
-        MoBot bot = new MoBot(args);
-        Runtime.getRuntime().addShutdownHook(new Thread(bot::shutdown));
+    public FinalizedBotEnvironment getFinalizedBotEnvironment() {
+        return finalizedBotEnvironment;
     }
 
     private DefaultShardManagerBuilder getBuilder() {
@@ -146,29 +152,43 @@ public class MoBot {
 
         String token = yamlConfig.getString("token");
 
-        if (token == null || token.isEmpty()) {
+        if(token == null || token.isBlank()) {
             logger.info("No Discord Bot-Token found. This might be your first time running the bot. Please enter a valid bot token: ");
+        }
+
+        while (true) {
+            if(token != null && !token.isBlank()) {
+                try {
+                    shardManager = builder.build();
+                    return shardManager;
+                } catch (InvalidTokenException e) {
+                    logger.info("The configured Discord Bot-Token is now invalid. Please enter a new token: ");
+                } catch (Exception e) {
+                    throw new BotStartupException("An unknown error occurred while setting up the shard manager.", e);
+                }
+            }
+
             token = scanner.nextLine();
+
+            if (token.isBlank()) {
+                logger.warn("The provided Discord Bot-Token cannot be empty. Please enter a new token: ");
+                continue;
+            }
+
             yamlConfig.set("token", token);
             yamlConfig.save();
             builder.setToken(token);
-        }
 
-        while (shardManager == null) {
             try {
                 shardManager = builder.build();
+                return shardManager;
             } catch (InvalidTokenException e) {
                 logger.info("The provided Discord Bot-Token is invalid. Please enter a new token: ");
-                String newToken = scanner.nextLine();
-                yamlConfig.set("token", newToken);
-                yamlConfig.save();
-                builder.setToken(newToken);
+                token = null;
             } catch (Exception e) {
                 throw new BotStartupException("An unknown error occurred while setting up the shard manager.", e);
             }
         }
-
-        return shardManager;
     }
 
     private boolean containsArg(String[] args, String target) {
