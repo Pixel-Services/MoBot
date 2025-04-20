@@ -14,7 +14,7 @@
 
 # If you have any questions or need help, feel free to join the support server:
 # https://discord.gg/KTF3Wsk85G
-token: 'TOKEN_HERE'
+token: ''
 
 # Need to enable gateway intents? Place them here.
 # To find out more about intents, visit:
