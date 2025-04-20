@@ -3,7 +3,7 @@ package com.pixelservices.api.modules;
 import com.pixelservices.api.env.FinalizedBotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
 
-public interface ModuleManager {
+public interface ModuleRegistry {
 
     void preEnable(PrimitiveBotEnvironment primitiveBotEnvironment);
 

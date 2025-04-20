@@ -4,16 +4,15 @@ import com.pixelservices.api.modules.MbModule;
 import com.pixelservices.api.modules.ModuleState;
 import com.pixelservices.console.ConsoleCommand;
 import com.pixelservices.logger.Logger;
-import com.pixelservices.modules.ModuleManagerImpl;
+import com.pixelservices.modules.ModuleManager;
 import com.pixelservices.plugin.PluginWrapper;
-import com.pixelservices.plugin.lifecycle.PluginState;
 
 import java.util.List;
 
 public class ModuleCommand implements ConsoleCommand {
-    private final ModuleManagerImpl moduleManager;
+    private final ModuleManager moduleManager;
 
-    public ModuleCommand(ModuleManagerImpl moduleManager) {
+    public ModuleCommand(ModuleManager moduleManager) {
         this.moduleManager = moduleManager;
     }
 

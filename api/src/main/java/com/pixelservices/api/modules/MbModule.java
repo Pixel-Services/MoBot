@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 public class MbModule extends Plugin {
 
-    private ModuleManager moduleManager;
+    private ModuleRegistry moduleRegistry;
     private BotEnvironment botEnvironment;
     private RegistryBridge registryBridge;
     private ListenerBridge listenerBridge;
@@ -70,8 +70,8 @@ public class MbModule extends Plugin {
 
     }
 
-    public ModuleManager getModuleManager() {
-        return moduleManager;
+    public ModuleRegistry getModuleManager() {
+        return moduleRegistry;
     }
 
     /**
@@ -132,8 +132,8 @@ public class MbModule extends Plugin {
      *
      * @param botEnvironment the {@link PrimitiveBotEnvironment} to inject
      */
-    public final void inject(ModuleManager moduleManager, PrimitiveBotEnvironment botEnvironment, RegistryBridge registryBridge) {
-        this.moduleManager = moduleManager;
+    public final void inject(ModuleRegistry moduleRegistry, PrimitiveBotEnvironment botEnvironment, RegistryBridge registryBridge) {
+        this.moduleRegistry = moduleRegistry;
         this.botEnvironment = botEnvironment;
         this.registryBridge = registryBridge;
     }

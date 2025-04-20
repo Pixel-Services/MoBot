@@ -3,16 +3,13 @@ package com.pixelservices.modules;
 import com.pixelservices.api.env.FinalizedBotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.api.modules.MbModule;
-import com.pixelservices.api.modules.ModuleManager;
+import com.pixelservices.api.modules.ModuleRegistry;
 import com.pixelservices.api.modules.ModuleState;
 import com.pixelservices.commands.CommandManager;
 import com.pixelservices.plugin.PluginWrapper;
 import com.pixelservices.plugin.descriptor.finder.YamlDescriptorFinder;
 import com.pixelservices.plugin.lifecycle.PluginState;
 import com.pixelservices.plugin.manager.AbstractPluginManager;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -20,16 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ModuleManagerImpl extends AbstractPluginManager implements ModuleManager {
-
-    private static final Logger log = LoggerFactory.getLogger(ModuleManagerImpl.class);
+public class ModuleManager extends AbstractPluginManager implements ModuleRegistry {
 
     private final Map<String, ModuleState> moduleStates = new HashMap<>();
     private final CommandManager commandManager;
 
     private FinalizedBotEnvironment finalizedBotEnvironment;
 
-    public ModuleManagerImpl(CommandManager commandManager) {
+    public ModuleManager(CommandManager commandManager) {
         super(Paths.get("modules"), new YamlDescriptorFinder("module.yml"));
 
         this.commandManager = commandManager;

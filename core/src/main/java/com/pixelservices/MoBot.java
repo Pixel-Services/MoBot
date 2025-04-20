@@ -9,7 +9,7 @@ import com.pixelservices.console.Console;
 import com.pixelservices.exceptions.BotStartupException;
 import com.pixelservices.logger.Logger;
 import com.pixelservices.logger.LoggerFactory;
-import com.pixelservices.modules.ModuleManagerImpl;
+import com.pixelservices.modules.ModuleManager;
 import com.pixelservices.utils.UpdateChecker;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -31,7 +31,7 @@ import java.util.Scanner;
  */
 public class MoBot {
     private final Logger logger;
-    private final ModuleManagerImpl moduleManager;
+    private final ModuleManager moduleManager;
     private final Console console;
     private FinalizedBotEnvironment finalizedBotEnvironment;
 
@@ -54,7 +54,7 @@ public class MoBot {
         CommandManager commandManager = new CommandManager();
 
         // Initialize the ModuleManager
-        moduleManager = new ModuleManagerImpl(commandManager);
+        moduleManager = new ModuleManager(commandManager);
 
         // Pre-enable the modules
         moduleManager.preEnable(primitiveBotEnvironment);
@@ -124,7 +124,7 @@ public class MoBot {
         return console;
     }
 
-    public ModuleManagerImpl getModuleManager() {
+    public ModuleManager getModuleManager() {
         return moduleManager;
     }
 
