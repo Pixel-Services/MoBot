@@ -5,7 +5,10 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a command that can be executed in response to a slash command interaction in Discord.
+ *
+ * This interface is deprecated and should be replaced with the new command system.
  */
+@Deprecated
 public interface SlashCommandAddon {
 
     /**

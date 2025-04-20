@@ -1,5 +1,13 @@
 package com.pixelservices.commands;
 
+import com.pixelservices.api.commands.SlashCommand;
+import com.pixelservices.api.commands.SlashCommandArgument;
+import com.pixelservices.api.commands.SlashCommandChoice;
+import com.pixelservices.api.commands.SlashCommandHandler;
+import com.pixelservices.exceptions.CommandExecuteException;
+import com.pixelservices.logger.Logger;
+import com.pixelservices.logger.LoggerFactory;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -7,11 +15,16 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import com.pixelservices.api.addons.SlashCommandAddon;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * CommandManager is responsible for managing and registering slash commands within a Discord guild.
@@ -19,8 +32,10 @@ import java.util.List;
  * It also processes interactions with slash commands.
  */
 public class CommandManager extends ListenerAdapter {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ArrayList<CommandData> commandDataList = new ArrayList<>();
-    private final HashMap<String, SlashCommandAddon> commands = new HashMap<>();
+    private final Map<String, SlashCommandExecutor> slashCommandExecutorMap = new HashMap<>();
+    private final HashMap<String, SlashCommandAddon> slashCommandAddonMap = new HashMap<>();
     private final List<Guild> guilds = new ArrayList<>();
 
     /**
@@ -59,11 +74,19 @@ public class CommandManager extends ListenerAdapter {
      */
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        for (String command : commands.keySet()) {
-            if (command.equalsIgnoreCase(event.getName())) {
-                commands.get(command).execute(event);
-                break;
+        SlashCommandExecutor executor = slashCommandExecutorMap.get(event.getName());
+        if (executor != null) {
+            try {
+                executor.execute(event);
+            } catch (CommandExecuteException e) {
+                logger.error("Failed to execute command: " + event.getName(), e);
             }
+            return;
+        }
+        
+        SlashCommandAddon command = slashCommandAddonMap.get(event.getName());
+        if (command != null) {
+            command.execute(event);
         }
     }
 
@@ -73,13 +96,90 @@ public class CommandManager extends ListenerAdapter {
      *
      * @param slashCommandAddon the {@link SlashCommandAddon} to register
      */
+    @Deprecated(forRemoval = true)
     public void registerCommand(CommandData commandData, SlashCommandAddon slashCommandAddon) {
-        commands.put(commandData.getName(), slashCommandAddon);
+        if (commandExists(commandData.getName())) {
+            logger.warn("Unable to register command: " + commandData.getName() + ". A command with this name has already been registered.");
+            return;
+        }
+        logger.warn("SlashCommandAddon is deprecated and scheduled for removal in future versions. Please use the SlashCommandHandler instead.");
+        slashCommandAddonMap.put(commandData.getName(), slashCommandAddon);
         commandDataList.add(commandData);
         for (Guild guild : guilds) {
             guild.updateCommands()
                     .addCommands(commandDataList)
                     .queue();
         }
+    }
+
+    /**
+     * Registers a {@link SlashCommandHandler} with the CommandManager.
+     * The registered commands will be handled in the {@link #onSlashCommandInteraction(SlashCommandInteractionEvent)} method.
+     *
+     * @param handler the {@link SlashCommandHandler} to register
+     */
+    public void registerCommandHandler(SlashCommandHandler handler) {
+        Class<?> handlerClass = handler.getClass();
+        for (Method method : handlerClass.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(SlashCommand.class)) {
+                SlashCommand annotation = method.getAnnotation(SlashCommand.class);
+                String commandName = annotation.name();
+
+                if (commandExists(commandName)) {
+                    logger.warn("Unable to register command: " + commandName + ". A command with this name has already been registered.");
+                    continue;
+                }
+
+                List<CommandData> commandDataList = new ArrayList<>();
+
+                //Setup the Command Executor
+                SlashCommandArgument[] argumentAnnotations = method.getAnnotationsByType(SlashCommandArgument.class);
+                List<SlashCommandArgument> arguments = List.of(argumentAnnotations);
+                SlashCommandExecutor executor = new SlashCommandExecutor(handler, method, arguments);
+                
+                String description = annotation.description();
+                Permission permission = annotation.permission();
+                
+                //Setup the Command
+                SlashCommandData commandData = generateSlashCommandData(commandName, description, permission, argumentAnnotations);
+                commandDataList.add(commandData);
+                slashCommandExecutorMap.put(commandName, executor);
+                
+                //Setup the Aliases
+                String[] aliases = annotation.aliases();
+                for (String alias : aliases) {
+                    if (slashCommandExecutorMap.containsKey(alias)) {
+                        logger.warn("Unable to register alias: " + alias + ". A command with this name has already been registered.");
+                        continue;
+                    }
+                    commandDataList.add(generateSlashCommandData(alias, description, permission, argumentAnnotations));
+                    slashCommandExecutorMap.put(commandName, executor);
+                }
+
+                //Register the command and its aliases
+                for (Guild guild : guilds) {
+                    guild.updateCommands()
+                            .addCommands(commandDataList)
+                            .queue();
+                }
+                this.commandDataList.addAll(commandDataList);
+            }
+        }
+    }
+
+    private SlashCommandData generateSlashCommandData(String commandName, String description, Permission permission, SlashCommandArgument[] arguments) {
+        SlashCommandData commandData = Commands.slash(commandName, description);
+        for (SlashCommandArgument argument : arguments) {
+            OptionData optionData = new OptionData(argument.type(), argument.name(), argument.description(), argument.required(), argument.autoComplete());
+            for (SlashCommandChoice choice : argument.choices()) {
+                optionData.addChoice(choice.name(), choice.value());
+            }
+            commandData.addOptions(optionData);
+        }
+        return commandData;
+    }
+
+    private boolean commandExists(String commandName) {
+        return slashCommandExecutorMap.containsKey(commandName) || slashCommandAddonMap.containsKey(commandName);
     }
 }

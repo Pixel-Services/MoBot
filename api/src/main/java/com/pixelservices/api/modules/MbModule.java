@@ -1,9 +1,11 @@
 package com.pixelservices.api.modules;
 
+import com.pixelservices.api.addons.SlashCommandAddon;
+import com.pixelservices.api.commands.SlashCommandHandler;
 import com.pixelservices.api.env.BotEnvironment;
 import com.pixelservices.api.env.FinalizedBotEnvironment;
 import com.pixelservices.api.env.PrimitiveBotEnvironment;
-import com.pixelservices.api.addons.SlashCommandAddon;
+import com.pixelservices.api.commands.SlashCommand;
 import com.pixelservices.plugin.Plugin;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
@@ -74,12 +76,22 @@ public class MbModule extends Plugin {
      * @param data the {@link CommandData} for the slash command containing the command name, description, and options for the command
      * @param addon the {@link SlashCommandAddon} to handle the command interaction
      */
+    @Deprecated(forRemoval = true)
     public final void registerSlashCommand(CommandData data, SlashCommandAddon addon){
         registryBridge.registerCommand(data, addon);
     }
 
     /**
-     * Registers event listeners with the bot's shard manager.
+     * Registers a slash command handler with the bot.
+     *
+     * @param slashCommandHandler the {@link SlashCommand} to handle the command interaction
+     */
+    public final void registerSlashCommandHandler(SlashCommandHandler slashCommandHandler){
+        registryBridge.registerCommandHandler(slashCommandHandler);
+    }
+
+    /**
+     * Registers event listeners with the bot.
      *
      * @param listeners the event listeners to be registered
      */
@@ -87,7 +99,7 @@ public class MbModule extends Plugin {
         if (botEnvironment instanceof FinalizedBotEnvironment botEnv) {
             botEnv.getShardManager().addEventListener(listeners);
         } else {
-            getLogger().error("Failed to register event listeners: ShardManager is not available yet. Please register listeners after the onEnable method was called.");
+            getLogger().error("Failed to register event listeners: Bot is not available yet. Please register listeners after the onEnable method was called.");
         }
     }
 

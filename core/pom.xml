@@ -4,7 +4,7 @@
 
     <groupId>com.pixelservices</groupId>
     <artifactId>mobot</artifactId>
-    <version>0.4.0</version>
+    <version>0.4.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>com.pixelservices</groupId>
             <artifactId>mobot-api</artifactId>
-            <version>0.3.8</version>
+            <version>0.3.9d-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
