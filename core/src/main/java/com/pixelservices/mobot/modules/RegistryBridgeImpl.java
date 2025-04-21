@@ -1,9 +1,7 @@
 package com.pixelservices.mobot.modules;
 
-import com.pixelservices.mobot.api.addons.SlashCommandAddon;
 import com.pixelservices.mobot.api.modules.RegistryBridge;
 import com.pixelservices.mobot.commands.CommandManager;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import com.pixelservices.mobot.api.commands.SlashCommandHandler;
 
 /**
@@ -20,19 +18,6 @@ public class RegistryBridgeImpl implements RegistryBridge {
      */
     public RegistryBridgeImpl(CommandManager commandManager) {
         this.commandManager = commandManager;
-    }
-
-    /**
-     * Registers a command with the specified CommandData and SlashCommandAddon.
-     *
-     * @deprecated This method is deprecated and will be removed in future versions.
-     * @param commandData       the CommandData representing the command to be registered
-     * @param slashCommandAddon the SlashCommandAddon to be associated with the command
-     */
-    @Override
-    @Deprecated(forRemoval = true)
-    public void registerCommand(CommandData commandData, SlashCommandAddon slashCommandAddon) {
-        commandManager.registerCommand(commandData, slashCommandAddon);
     }
 
     /**
