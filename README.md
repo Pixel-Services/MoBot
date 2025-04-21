@@ -7,6 +7,8 @@
 <br>
 </div>
 
+[![Latest Version](https://img.shields.io/maven-metadata/v?metadataUrl=https://maven.pixel-services.com/releases/com/pixelservices/mobot/mobot-api/maven-metadata.xml)](https://maven.pixel-services.com/#/releases/com/pixelservices/mobot/mobot-api)
+
 ## Overview
 MoBot is a modular Discord bot with a powerful, feature-rich API that lets developers build custom modules and extend the bot with all kinds of functionality.
 
@@ -70,8 +72,6 @@ dependencies {
   implementation "com.pixelservices.mobot:mobot-api:VERSION"  // Replace VERSION
 }
 ```
-
-_Find the latest version [here](https://maven.pixel-services.com/#/releases/com/pixelservices/MoBot)._
 
 2. **Create Main Class**: Extend the `MbModule` class and override the `onEnable` and `onDisable` methods:
 
