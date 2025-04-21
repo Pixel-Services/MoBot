@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import com.pixelservices.mobot.api.addons.SlashCommandAddon;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -35,7 +34,6 @@ public class CommandManager extends ListenerAdapter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ArrayList<CommandData> commandDataList = new ArrayList<>();
     private final Map<String, SlashCommandExecutor> slashCommandExecutorMap = new HashMap<>();
-    private final HashMap<String, SlashCommandAddon> slashCommandAddonMap = new HashMap<>();
     private final List<Guild> guilds = new ArrayList<>();
 
     /**
@@ -68,9 +66,9 @@ public class CommandManager extends ListenerAdapter {
 
     /**
      * This method is called when a slash command interaction is received.
-     * It delegates the command execution to the appropriate {@link SlashCommandAddon} based on the command name.
+     * It executes the corresponding command based on the command name.
      *
-     * @param event the SlashCommandInteractionEvent containing information about the received command interaction
+     * @param event the SlashCommandInteractionEvent containing information about the command interaction
      */
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
@@ -82,33 +80,6 @@ public class CommandManager extends ListenerAdapter {
                 logger.error("Failed to execute command: " + event.getName(), e);
             }
             return;
-        }
-        
-        SlashCommandAddon command = slashCommandAddonMap.get(event.getName());
-        if (command != null) {
-            command.execute(event);
-        }
-    }
-
-    /**
-     * Registers a custom {@link SlashCommandAddon} with the CommandManager.
-     * The registered command will be handled in the {@link #onSlashCommandInteraction(SlashCommandInteractionEvent)} method.
-     *
-     * @param slashCommandAddon the {@link SlashCommandAddon} to register
-     */
-    @Deprecated(forRemoval = true)
-    public void registerCommand(CommandData commandData, SlashCommandAddon slashCommandAddon) {
-        if (commandExists(commandData.getName())) {
-            logger.warn("Unable to register command: " + commandData.getName() + ". A command with this name has already been registered.");
-            return;
-        }
-        logger.warn("SlashCommandAddon is deprecated and scheduled for removal in future versions. Please use the SlashCommandHandler instead.");
-        slashCommandAddonMap.put(commandData.getName(), slashCommandAddon);
-        commandDataList.add(commandData);
-        for (Guild guild : guilds) {
-            guild.updateCommands()
-                    .addCommands(commandDataList)
-                    .queue();
         }
     }
 
@@ -180,6 +151,6 @@ public class CommandManager extends ListenerAdapter {
     }
 
     private boolean commandExists(String commandName) {
-        return slashCommandExecutorMap.containsKey(commandName) || slashCommandAddonMap.containsKey(commandName);
+        return slashCommandExecutorMap.containsKey(commandName);
     }
 }

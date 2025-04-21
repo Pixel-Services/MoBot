@@ -1,6 +1,5 @@
 package com.pixelservices.mobot.api.modules;
 
-import com.pixelservices.mobot.api.addons.SlashCommandAddon;
 import com.pixelservices.mobot.api.commands.SlashCommand;
 import com.pixelservices.mobot.api.commands.SlashCommandHandler;
 import com.pixelservices.mobot.api.env.BotEnvironment;
@@ -11,8 +10,6 @@ import com.pixelservices.mobot.api.modules.listener.ModuleListener;
 import com.pixelservices.mobot.api.scheduler.ScheduledTask;
 import com.pixelservices.mobot.api.scheduler.TaskScheduler;
 import com.pixelservices.plugin.Plugin;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import org.jetbrains.annotations.Nullable;
 
 public class MbModule extends Plugin {
 
@@ -89,17 +86,6 @@ public class MbModule extends Plugin {
 
     public TaskScheduler getTaskScheduler() {
         return taskScheduler;
-    }
-
-    /**
-     * Registers a slash command with the bot.
-     *
-     * @param data the {@link CommandData} for the slash command containing the command name, description, and options for the command
-     * @param addon the {@link SlashCommandAddon} to handle the command interaction
-     */
-    @Deprecated(forRemoval = true)
-    public final void registerSlashCommand(CommandData data, SlashCommandAddon addon){
-        registryBridge.registerCommand(data, addon);
     }
 
     /**
