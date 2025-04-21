@@ -65,7 +65,7 @@ public class Console {
         registerCommand("modules" , (args, logger) -> {
             logger.info("Did you mean 'module list'?");
         });
-        registerCommand("module", new ModuleCommand(moBot.getModuleManager()));
+        registerCommand("module", new ModuleCommand(moBot.getTaskScheduler(), moBot.getModuleManager()));
         registerCommand("version", new VersionCommand());
         logger.info("Registered " + commands.size() + " CLI-commands");
     }

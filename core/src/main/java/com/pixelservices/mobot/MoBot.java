@@ -2,6 +2,7 @@ package com.pixelservices.mobot;
 
 import com.pixelservices.mobot.api.env.FinalizedBotEnvironment;
 import com.pixelservices.mobot.api.env.PrimitiveBotEnvironment;
+import com.pixelservices.mobot.api.scheduler.TaskScheduler;
 import com.pixelservices.mobot.commands.CommandManager;
 import com.pixelservices.config.ConfigFactory;
 import com.pixelservices.config.YamlConfig;
@@ -10,6 +11,7 @@ import com.pixelservices.mobot.exceptions.BotStartupException;
 import com.pixelservices.logger.Logger;
 import com.pixelservices.logger.LoggerFactory;
 import com.pixelservices.mobot.modules.ModuleManager;
+import com.pixelservices.mobot.scheduler.BotTaskScheduler;
 import com.pixelservices.mobot.utils.UpdateChecker;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -31,7 +33,9 @@ import java.util.concurrent.CountDownLatch;
  * </p>
  */
 public class MoBot {
+
     private final Logger logger;
+    private final BotTaskScheduler taskScheduler;
     private final ModuleManager moduleManager;
     private final Console console;
     private FinalizedBotEnvironment finalizedBotEnvironment;
@@ -55,8 +59,11 @@ public class MoBot {
         // Initialize the CommandManager
         CommandManager commandManager = new CommandManager();
 
+        // Initialize the TaskScheduler
+        taskScheduler = new BotTaskScheduler();
+
         // Initialize the ModuleManager
-        moduleManager = new ModuleManager(commandManager);
+        moduleManager = new ModuleManager(taskScheduler, commandManager);
 
         // Pre-enable the modules
         moduleManager.preEnable(primitiveBotEnvironment);
@@ -108,6 +115,7 @@ public class MoBot {
     public void shutdown() {
         logger.info("Shutting down MoBot...");
 
+        taskScheduler.shutdown();
         moduleManager.preDisable();
 
         if (finalizedBotEnvironment != null && finalizedBotEnvironment.getShardManager() != null) {
@@ -126,6 +134,10 @@ public class MoBot {
 
     public Console getConsole() {
         return console;
+    }
+
+    public BotTaskScheduler getTaskScheduler() {
+        return taskScheduler;
     }
 
     public ModuleManager getModuleManager() {

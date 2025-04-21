@@ -5,6 +5,7 @@ import com.pixelservices.mobot.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.mobot.api.modules.MbModule;
 import com.pixelservices.mobot.api.modules.ModuleRegistry;
 import com.pixelservices.mobot.api.modules.ModuleState;
+import com.pixelservices.mobot.api.scheduler.TaskScheduler;
 import com.pixelservices.mobot.commands.CommandManager;
 import com.pixelservices.plugin.PluginWrapper;
 import com.pixelservices.plugin.descriptor.finder.YamlDescriptorFinder;
@@ -20,13 +21,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ModuleManager extends AbstractPluginManager implements ModuleRegistry {
 
     private final Map<String, ModuleState> moduleStates = new HashMap<>();
+
+    private final TaskScheduler taskScheduler;
     private final CommandManager commandManager;
 
     private FinalizedBotEnvironment finalizedBotEnvironment;
 
-    public ModuleManager(CommandManager commandManager) {
+    public ModuleManager(TaskScheduler taskScheduler, CommandManager commandManager) {
         super(Paths.get("modules"), new YamlDescriptorFinder("module.yml"));
 
+        this.taskScheduler = taskScheduler;
         this.commandManager = commandManager;
     }
 
@@ -42,7 +46,7 @@ public class ModuleManager extends AbstractPluginManager implements ModuleRegist
             try {
                 if (pluginWrapper.getState().equals(PluginState.LOADED)) {
                     MbModule module = (MbModule) pluginWrapper.getPlugin();
-                    module.inject(this, primitiveBotEnvironment, new RegistryBridgeImpl(commandManager));
+                    module.inject(taskScheduler, this, primitiveBotEnvironment, new RegistryBridgeImpl(commandManager));
 
                     moduleStates.put(module.getId(), ModuleState.PENDING_ENABLE);
 
