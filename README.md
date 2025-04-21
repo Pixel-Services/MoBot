@@ -8,7 +8,7 @@
 </div>
 
 [![Latest Version](https://img.shields.io/maven-metadata/v?metadataUrl=https://maven.pixel-services.com/releases/com/pixelservices/mobot/mobot-api/maven-metadata.xml)](https://maven.pixel-services.com/#/releases/com/pixelservices/mobot/mobot-api)
-[![Documentation](https://img.shields.io/badge/docs-Documentation-blue)](https://docs.pixel-services.com/Mobot)
+[![Documentation](https://img.shields.io/badge/docs-Documentation-blue)](https://docs.pixel-services.com/mobot)
 
 ## Overview
 MoBot is a modular Discord bot with a powerful, feature-rich API that lets developers build custom modules and extend the bot with all kinds of functionality.
