@@ -7,10 +7,13 @@ import com.pixelservices.mobot.api.env.FinalizedBotEnvironment;
 import com.pixelservices.mobot.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.mobot.api.modules.listener.ListenerBridge;
 import com.pixelservices.mobot.api.modules.listener.ModuleListener;
+import com.pixelservices.mobot.api.scheduler.ScheduledTask;
+import com.pixelservices.mobot.api.scheduler.TaskScheduler;
 import com.pixelservices.plugin.Plugin;
 
 public class MbModule extends Plugin {
 
+    private TaskScheduler taskScheduler;
     private ModuleRegistry moduleRegistry;
     private BotEnvironment botEnvironment;
     private RegistryBridge registryBridge;
@@ -81,6 +84,10 @@ public class MbModule extends Plugin {
         return listenerBridge;
     }
 
+    public TaskScheduler getTaskScheduler() {
+        return taskScheduler;
+    }
+
     /**
      * Registers a slash command handler with the bot.
      *
@@ -115,7 +122,8 @@ public class MbModule extends Plugin {
      *
      * @param botEnvironment the {@link PrimitiveBotEnvironment} to inject
      */
-    public final void inject(ModuleRegistry moduleRegistry, PrimitiveBotEnvironment botEnvironment, RegistryBridge registryBridge) {
+    public final void inject(TaskScheduler taskScheduler, ModuleRegistry moduleRegistry, PrimitiveBotEnvironment botEnvironment, RegistryBridge registryBridge) {
+        this.taskScheduler = taskScheduler;
         this.moduleRegistry = moduleRegistry;
         this.botEnvironment = botEnvironment;
         this.registryBridge = registryBridge;

@@ -2,17 +2,25 @@ package com.pixelservices.mobot.console.impl;
 
 import com.pixelservices.mobot.api.modules.MbModule;
 import com.pixelservices.mobot.api.modules.ModuleState;
+import com.pixelservices.mobot.api.scheduler.ScheduledTask;
+import com.pixelservices.mobot.api.scheduler.TaskScheduler;
 import com.pixelservices.mobot.console.ConsoleCommand;
 import com.pixelservices.logger.Logger;
 import com.pixelservices.mobot.modules.ModuleManager;
 import com.pixelservices.plugin.PluginWrapper;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Set;
 
 public class ModuleCommand implements ConsoleCommand {
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ModuleCommand.class);
+    private final TaskScheduler taskScheduler;
     private final ModuleManager moduleManager;
 
-    public ModuleCommand(ModuleManager moduleManager) {
+    public ModuleCommand(TaskScheduler taskScheduler, ModuleManager moduleManager) {
+        this.taskScheduler = taskScheduler;
         this.moduleManager = moduleManager;
     }
 
@@ -22,6 +30,7 @@ public class ModuleCommand implements ConsoleCommand {
             logger.info("Module Command Usage:");
             logger.info("module list - List all modules.");
             logger.info("module reload <module> - Reload a module");
+            logger.info("module tasks <module> - List a modules scheduled tasks.");
             logger.info("module enable <module> - Attempt to enable a module.");
             logger.info("module disable <module> - Attempt to disable a module.");
             return;
@@ -46,6 +55,33 @@ public class ModuleCommand implements ConsoleCommand {
 
             builder.setLength(builder.length() - 2);
             logger.info(builder.toString());
+            return;
+        }
+
+        if(args[0].equalsIgnoreCase("tasks")) {
+            if(args.length < 2) {
+                logger.warn("You must provide a module id!");
+                return;
+            }
+
+            MbModule module = moduleManager.getModule(args[1]);
+
+            if(module == null) {
+                logger.error("Invalid module!");
+                return;
+            }
+
+            List<ScheduledTask> moduleTasks = taskScheduler.getTasks().values().stream()
+                    .filter(scheduledTask -> scheduledTask.getModule().getId().equalsIgnoreCase(module.getId())).toList();
+
+            if(moduleTasks.isEmpty()) {
+                logger.info(String.format("Module %s has no scheduled tasks.", module.getId()));
+                return;
+            }
+
+            logger.info(String.format("%s Scheduled Tasks:", module.getId()));
+            logger.info(String.format("Total: %s, Async: %s, Repeating: %s", moduleTasks.size(),
+                    moduleTasks.stream().filter(ScheduledTask::isAsync).count(), moduleTasks.stream().filter(ScheduledTask::isRepeating).count()));
             return;
         }
 
