@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.pixelservices</groupId>
+        <groupId>com.pixelservices.mobot</groupId>
         <artifactId>mobot</artifactId>
-        <version>0.4.3</version>
+        <version>0.4.4</version>
     </parent>
 
     <artifactId>mobot-core</artifactId>
@@ -15,9 +15,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.pixelservices</groupId>
+            <groupId>com.pixelservices.mobot</groupId>
             <artifactId>mobot-api</artifactId>
-            <version>0.3.11</version>
+            <version>0.4.4</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
@@ -66,7 +66,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>com.pixelservices.MoBot</Main-Class>
+                            <Main-Class>com.pixelservices.mobot.MoBot</Main-Class>
                         </manifestEntries>
                     </archive>
                 </configuration>
