@@ -50,8 +50,8 @@ To create a module for MoBot, follow these steps:
   <url>https://maven.pixel-services.com/releases</url>
 </repository>
 
-<dependency> 
-    <groupId>com.pixelservices</groupId>  
+<dependency>
+    <groupId>com.pixelservices.mobot</groupId>
     <artifactId>mobot-api</artifactId>
     <version>VERSION</version> <!-- Replace VERSION -->
 </dependency>
@@ -67,7 +67,7 @@ maven {
 }
 
 dependencies {
-  implementation "com.pixelservices:mobot-api:VERSION"  // Replace VERSION
+  implementation "com.pixelservices.mobot:mobot-api:VERSION"  // Replace VERSION
 }
 ```
 
