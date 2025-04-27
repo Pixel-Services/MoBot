@@ -13,6 +13,13 @@
     <artifactId>mobot-core</artifactId>
     <name>MoBot Core</name>
 
+    <distributionManagement>
+        <repository>
+            <id>Pixel-Services</id>
+            <url>https://maven.pixel-services.com/releases</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.pixelservices.mobot</groupId>
