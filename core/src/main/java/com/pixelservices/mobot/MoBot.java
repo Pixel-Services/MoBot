@@ -1,15 +1,14 @@
 package com.pixelservices.mobot;
 
-import com.pixelservices.mobot.api.env.FinalizedBotEnvironment;
-import com.pixelservices.mobot.api.env.PrimitiveBotEnvironment;
-import com.pixelservices.mobot.api.scheduler.TaskScheduler;
-import com.pixelservices.mobot.commands.CommandManager;
 import com.pixelservices.config.ConfigFactory;
 import com.pixelservices.config.YamlConfig;
-import com.pixelservices.mobot.console.Console;
-import com.pixelservices.mobot.exceptions.BotStartupException;
 import com.pixelservices.logger.Logger;
 import com.pixelservices.logger.LoggerFactory;
+import com.pixelservices.mobot.api.env.FinalizedBotEnvironment;
+import com.pixelservices.mobot.api.env.PrimitiveBotEnvironment;
+import com.pixelservices.mobot.commands.CommandManager;
+import com.pixelservices.mobot.console.Console;
+import com.pixelservices.mobot.exceptions.BotStartupException;
 import com.pixelservices.mobot.modules.ModuleManager;
 import com.pixelservices.mobot.scheduler.BotTaskScheduler;
 import com.pixelservices.mobot.utils.UpdateChecker;
