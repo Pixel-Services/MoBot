@@ -1,12 +1,12 @@
 package com.pixelservices.mobot.commands;
 
+import com.pixelservices.logger.Logger;
+import com.pixelservices.logger.LoggerFactory;
 import com.pixelservices.mobot.api.commands.SlashCommand;
 import com.pixelservices.mobot.api.commands.SlashCommandArgument;
 import com.pixelservices.mobot.api.commands.SlashCommandChoice;
 import com.pixelservices.mobot.api.commands.SlashCommandHandler;
 import com.pixelservices.mobot.exceptions.CommandExecuteException;
-import com.pixelservices.logger.Logger;
-import com.pixelservices.logger.LoggerFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;

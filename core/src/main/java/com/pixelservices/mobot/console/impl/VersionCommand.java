@@ -1,7 +1,7 @@
 package com.pixelservices.mobot.console.impl;
 
-import com.pixelservices.mobot.console.ConsoleCommand;
 import com.pixelservices.logger.Logger;
+import com.pixelservices.mobot.console.ConsoleCommand;
 import com.pixelservices.mobot.utils.UpdateChecker;
 
 public class VersionCommand implements ConsoleCommand {

@@ -1,8 +1,8 @@
 package com.pixelservices.mobot.modules;
 
+import com.pixelservices.mobot.api.commands.SlashCommandHandler;
 import com.pixelservices.mobot.api.modules.RegistryBridge;
 import com.pixelservices.mobot.commands.CommandManager;
-import com.pixelservices.mobot.api.commands.SlashCommandHandler;
 
 /**
  * This class serves as a bridge for registering commands and command handlers.

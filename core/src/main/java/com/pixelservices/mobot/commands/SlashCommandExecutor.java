@@ -1,5 +1,6 @@
 package com.pixelservices.mobot.commands;
 
+import com.pixelservices.mobot.api.commands.CommandArguments;
 import com.pixelservices.mobot.api.commands.SlashCommandArgument;
 import com.pixelservices.mobot.api.commands.SlashCommandHandler;
 import com.pixelservices.mobot.exceptions.CommandExecuteException;
@@ -45,15 +46,35 @@ class SlashCommandExecutor {
             if (parameters.length == 0 || parameters[0].getType() != SlashCommandInteractionEvent.class || parameters.length > 2) {
                 throw new CommandExecuteException("Incompatible method parameters. " + Arrays.toString(parameters));
             }
+
             if (parameters.length == 1) {
                 method.invoke(handler, event);
-            } else {
-                Map<String, Object> parsedArgs = new HashMap<>();
+                return;
+            }
+
+            Object argumentContainer;
+
+            Class<?> paramType = parameters[1].getType();
+            if (Map.class.isAssignableFrom(paramType)) {
+                // OLD WAY (DEPRECATED)
+                Map<String, Object> legacyArgs = new HashMap<>();
+                for (SlashCommandArgument arg : arguments) {
+                    legacyArgs.put(arg.name(), event.getOption(arg.name()));
+                }
+                argumentContainer = legacyArgs;
+            } else if (paramType == CommandArguments.class) {
+                CommandArguments parsedArgs = new CommandArguments();
                 for (SlashCommandArgument arg : arguments) {
                     parsedArgs.put(arg.name(), event.getOption(arg.name()));
                 }
-                method.invoke(handler, event, parsedArgs);
+                argumentContainer = parsedArgs;
+
+            } else {
+                throw new CommandExecuteException("Unsupported argument type: " + paramType.getName());
             }
+
+            method.invoke(handler, event, argumentContainer);
+
         } catch (Exception e) {
             throw new CommandExecuteException(e);
         }

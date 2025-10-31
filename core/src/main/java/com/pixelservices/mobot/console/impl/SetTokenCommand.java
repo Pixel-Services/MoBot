@@ -1,9 +1,9 @@
 package com.pixelservices.mobot.console.impl;
 
 import com.pixelservices.config.ConfigFactory;
-import com.pixelservices.mobot.console.ConsoleCommand;
 import com.pixelservices.config.YamlConfig;
 import com.pixelservices.logger.Logger;
+import com.pixelservices.mobot.console.ConsoleCommand;
 
 public class SetTokenCommand implements ConsoleCommand {
 

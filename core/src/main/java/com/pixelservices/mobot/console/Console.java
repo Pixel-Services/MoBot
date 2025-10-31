@@ -1,11 +1,11 @@
 package com.pixelservices.mobot.console;
 
+import com.pixelservices.logger.Logger;
+import com.pixelservices.logger.LoggerFactory;
 import com.pixelservices.mobot.MoBot;
 import com.pixelservices.mobot.console.impl.ModuleCommand;
 import com.pixelservices.mobot.console.impl.SetTokenCommand;
 import com.pixelservices.mobot.console.impl.VersionCommand;
-import com.pixelservices.logger.Logger;
-import com.pixelservices.logger.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;

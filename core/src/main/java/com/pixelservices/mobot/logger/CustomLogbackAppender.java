@@ -1,10 +1,10 @@
 package com.pixelservices.mobot.logger;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.AppenderBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.spi.ThrowableProxy;
 
 public class CustomLogbackAppender extends AppenderBase<ILoggingEvent> {
     private final Logger customLogger = LoggerFactory.getLogger("Internal");
