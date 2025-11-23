@@ -1,12 +1,13 @@
 package com.pixelservices.mobot.scheduler;
 
-import com.pixelservices.logger.Logger;
-import com.pixelservices.logger.LoggerFactory;
+
 import com.pixelservices.mobot.api.modules.MbModule;
 import com.pixelservices.mobot.api.scheduler.ScheduledTask;
 import com.pixelservices.mobot.api.scheduler.TaskScheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Map;

@@ -5,13 +5,12 @@ import com.pixelservices.mobot.api.modules.ModuleState;
 import com.pixelservices.mobot.api.scheduler.ScheduledTask;
 import com.pixelservices.mobot.api.scheduler.TaskScheduler;
 import com.pixelservices.mobot.console.ConsoleCommand;
-import com.pixelservices.logger.Logger;
 import com.pixelservices.mobot.modules.ModuleManager;
-import com.pixelservices.plugin.PluginWrapper;
+import dev.siea.jonion.PluginWrapper;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Set;
 
 public class ModuleCommand implements ConsoleCommand {
 

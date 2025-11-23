@@ -5,8 +5,6 @@ import com.pixelservices.mobot.api.commands.SlashCommandArgument;
 import com.pixelservices.mobot.api.commands.SlashCommandChoice;
 import com.pixelservices.mobot.api.commands.SlashCommandHandler;
 import com.pixelservices.mobot.exceptions.CommandExecuteException;
-import com.pixelservices.logger.Logger;
-import com.pixelservices.logger.LoggerFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -18,6 +16,8 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
 package com.pixelservices.mobot.console.impl;
 
-import com.pixelservices.config.ConfigFactory;
 import com.pixelservices.mobot.console.ConsoleCommand;
-import com.pixelservices.config.YamlConfig;
-import com.pixelservices.logger.Logger;
+import com.pixelservices.mobot.utils.ConfigUtil;
+import dev.siea.jonion.configuration.YamlPluginConfig;
+import org.slf4j.Logger;
 
 public class SetTokenCommand implements ConsoleCommand {
 
@@ -14,9 +14,9 @@ public class SetTokenCommand implements ConsoleCommand {
             return;
         }
         String token = args[0];
-        YamlConfig yamlConfig = ConfigFactory.getYamlConfig("./bot.yml");
+        YamlPluginConfig yamlConfig = ConfigUtil.getBotConfig();
         yamlConfig.set("token", token);
         yamlConfig.save();
-        logger.info("Token set to: " + token);
+        logger.info("Token set to: {}", token);
     }
 }

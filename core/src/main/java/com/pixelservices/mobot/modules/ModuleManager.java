@@ -7,10 +7,10 @@ import com.pixelservices.mobot.api.modules.ModuleRegistry;
 import com.pixelservices.mobot.api.modules.ModuleState;
 import com.pixelservices.mobot.api.scheduler.TaskScheduler;
 import com.pixelservices.mobot.commands.CommandManager;
-import com.pixelservices.plugin.PluginWrapper;
-import com.pixelservices.plugin.descriptor.finder.YamlDescriptorFinder;
-import com.pixelservices.plugin.lifecycle.PluginState;
-import com.pixelservices.plugin.manager.AbstractPluginManager;
+import dev.siea.jonion.PluginWrapper;
+import dev.siea.jonion.descriptor.finder.YamlDescriptorFinder;
+import dev.siea.jonion.lifecycle.PluginState;
+import dev.siea.jonion.manager.AbstractPluginManager;
 
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -53,14 +53,14 @@ public class ModuleManager extends AbstractPluginManager implements ModuleRegist
                     module.preEnable();
                 }
             } catch (Throwable e) {
-                logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during pre-enable", e);
-                logger.error("Unloading " + pluginWrapper.getPluginDescriptor().getPluginId() + " due to exception during pre-enable.");
+                logger.error("{} threw an exception during pre-enable", pluginWrapper.getPluginDescriptor().getPluginId(), e);
+                logger.error("Unloading {} due to exception during pre-enable.", pluginWrapper.getPluginDescriptor().getPluginId());
                 pluginWrapper.unload();
                 failedCount.getAndIncrement();
             }
         });
 
-        logger.info("Successfully pre-enabled " + (moduleStates.values().stream().filter(moduleState -> moduleState == ModuleState.PENDING_ENABLE).count() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
+        logger.info("Successfully pre-enabled {} modules. {} Modules failed this phase.", moduleStates.values().stream().filter(moduleState -> moduleState == ModuleState.PENDING_ENABLE).count() - failedCount.get(), failedCount.get());
     }
 
     public void enable(FinalizedBotEnvironment finalizedBotEnvironment) {
@@ -84,14 +84,14 @@ public class ModuleManager extends AbstractPluginManager implements ModuleRegist
                     module.onEnable();
                 }
             } catch (Throwable e) {
-                logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during enable", e);
-                logger.error("Unloading " + pluginWrapper.getPluginDescriptor().getPluginId() + " due to exception during enable.");
+                logger.error("{} threw an exception during enable", pluginWrapper.getPluginDescriptor().getPluginId(), e);
+                logger.error("Unloading {} due to exception during enable.", pluginWrapper.getPluginDescriptor().getPluginId());
                 pluginWrapper.unload();
                 failedCount.getAndIncrement();
             }
         });
 
-        logger.info("Successfully enabled " + (moduleStates.values().stream().filter(moduleState -> moduleState == ModuleState.ENABLED).count() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
+        logger.info("Successfully enabled {} modules. {} Modules failed this phase.", moduleStates.values().stream().filter(moduleState -> moduleState == ModuleState.ENABLED).count() - failedCount.get(), failedCount.get());
     }
 
     public void preDisable() {
@@ -111,12 +111,12 @@ public class ModuleManager extends AbstractPluginManager implements ModuleRegist
                     module.preDisable();
                 }
             } catch (Throwable e) {
-                logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during pre-disable", e);
+                logger.error("{} threw an exception during pre-disable", pluginWrapper.getPluginDescriptor().getPluginId(), e);
                 failedCount.getAndIncrement();
             }
         });
 
-        logger.info("Successfully pre-disabled " + (moduleStates.values().stream().filter(moduleState -> moduleState == ModuleState.PENDING_DISABLE).count() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
+        logger.info("Successfully pre-disabled {} modules. {} Modules failed this phase.", moduleStates.values().stream().filter(moduleState -> moduleState == ModuleState.PENDING_DISABLE).count() - failedCount.get(), failedCount.get());
     }
 
     public void disable() {
@@ -140,12 +140,12 @@ public class ModuleManager extends AbstractPluginManager implements ModuleRegist
                     module.onDisable();
                 }
             } catch (Throwable e) {
-                logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during disable", e);
+                logger.error("{} threw an exception during disable", pluginWrapper.getPluginDescriptor().getPluginId(), e);
                 failedCount.getAndIncrement();
             }
         });
 
-        logger.info("Successfully disabled " + (moduleStates.values().stream().filter(moduleState -> moduleState == ModuleState.DISABLED).count() - failedCount.get()) + " modules. " + failedCount.get() + " Modules failed this phase.");
+        logger.info("Successfully disabled {} modules. {} Modules failed this phase.", moduleStates.values().stream().filter(moduleState -> moduleState == ModuleState.DISABLED).count() - failedCount.get(), failedCount.get());
 
         unloadPlugins();
     }
@@ -153,29 +153,29 @@ public class ModuleManager extends AbstractPluginManager implements ModuleRegist
     @Override
     public void enable(MbModule module) {
         if(finalizedBotEnvironment == null) {
-            logger.error(String.format("Unable to enable module %s, bot isn't initialized yet.", module.getId()));
+            logger.error("Unable to enable module {}, bot isn't initialized yet.", module.getId());
             return;
         }
 
         if(getState(module) == ModuleState.INVALID) {
-            logger.error(String.format("Unable to enable invalid module %s, was it never initially registered?", module.getId()));
+            logger.error("Unable to enable invalid module {}, was it never initially registered?", module.getId());
             return;
         }
 
         PluginWrapper pluginWrapper = module.getPluginWrapper();
 
         if (!pluginWrapper.getState().equals(PluginState.LOADED)) {
-            logger.error(String.format("Unable to enable module %s, it has not been loaded.", module.getId()));
+            logger.error("Unable to enable module {}, it has not been loaded.", module.getId());
             return;
         }
 
         if(getState(module) == ModuleState.PENDING_ENABLE) {
-            logger.warn(String.format("Unable to enable module %s, it's already being enabled!", module.getId()));
+            logger.warn("Unable to enable module {}, it's already being enabled!", module.getId());
             return;
         }
 
         if(getState(module) == ModuleState.ENABLED) {
-            logger.warn(String.format("Unable to enable module %s, it's already enabled!", module.getId()));
+            logger.warn("Unable to enable module {}, it's already enabled!", module.getId());
             return;
         }
 
@@ -185,32 +185,32 @@ public class ModuleManager extends AbstractPluginManager implements ModuleRegist
                 module.listenerBridge(new ListenerBridgeImpl(finalizedBotEnvironment));
                 module.onEnable();
             } else {
-                logger.error(String.format("Failed to enable module %s, it is not loaded.", module.getId()));
+                logger.error("Failed to enable module {}, it is not loaded.", module.getId());
                 return;
             }
         } catch (Throwable e) {
-            logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during enable", e);
-            logger.error("Unloading " + pluginWrapper.getPluginDescriptor().getPluginId() + " due to exception during enable.");
+            logger.error("{} threw an exception during enable", pluginWrapper.getPluginDescriptor().getPluginId(), e);
+            logger.error("Unloading {} due to exception during enable.", pluginWrapper.getPluginDescriptor().getPluginId());
             pluginWrapper.unload();
             moduleStates.put(module.getId(), ModuleState.INVALID);
             return;
         }
 
         moduleStates.put(module.getId(), ModuleState.ENABLED);
-        logger.info(String.format("Module %s has been enabled!", module.getId()));
+        logger.info("Module {} has been enabled!", module.getId());
     }
 
     @Override
     public void reload(MbModule module) {
         if(getState(module) == ModuleState.INVALID) {
-            logger.error(String.format("Failed to reload invalid module %s, was it never initially registered?", module.getId()));
+            logger.error("Failed to reload invalid module {}, was it never initially registered?", module.getId());
             return;
         }
 
         PluginWrapper pluginWrapper = module.getPluginWrapper();
 
         if (!pluginWrapper.getState().equals(PluginState.LOADED)) {
-            logger.error(String.format("Failed to enable module %s, it is not loaded.", module.getId()));
+            logger.error("Failed to enable module {}, it is not loaded.", module.getId());
             return;
         }
 
@@ -220,34 +220,34 @@ public class ModuleManager extends AbstractPluginManager implements ModuleRegist
             module.getPluginWrapper().load();
             enable(module);
         } catch (Throwable e) {
-            logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during reload", e);
+            logger.error("{} threw an exception during reload", pluginWrapper.getPluginDescriptor().getPluginId(), e);
             return;
         }
 
-        logger.info(String.format("Module %s has been reloaded!", module.getId()));
+        logger.info("Module {} has been reloaded!", module.getId());
     }
 
     @Override
     public void disable(MbModule module) {
         if(getState(module) == ModuleState.INVALID) {
-            logger.error(String.format("Failed to disable invalid module %s, was it never initially registered?", module.getId()));
+            logger.error("Failed to disable invalid module {}, was it never initially registered?", module.getId());
             return;
         }
 
         PluginWrapper pluginWrapper = module.getPluginWrapper();
 
         if (!pluginWrapper.getState().equals(PluginState.LOADED)) {
-            logger.error(String.format("Failed to enable module %s, it is not loaded.", module.getId()));
+            logger.error("Failed to enable module {}, it is not loaded.", module.getId());
             return;
         }
 
         if(getState(module) == ModuleState.PENDING_DISABLE) {
-            logger.warn(String.format("Failed to disable module %s, it's already being disabled!", module.getId()));
+            logger.warn("Failed to disable module {}, it's already being disabled!", module.getId());
             return;
         }
 
         if(getState(module) == ModuleState.DISABLED) {
-            logger.warn(String.format("Failed to disable module %s, it's already disabled!", module.getId()));
+            logger.warn("Failed to disable module {}, it's already disabled!", module.getId());
             return;
         }
 
@@ -258,15 +258,15 @@ public class ModuleManager extends AbstractPluginManager implements ModuleRegist
             }
             module.onDisable();
         } catch (Throwable e) {
-            logger.error(pluginWrapper.getPluginDescriptor().getPluginId() + " threw an exception during disable", e);
-            logger.error("Unloading " + pluginWrapper.getPluginDescriptor().getPluginId() + " due to exception during disable.");
+            logger.error("{} threw an exception during disable", pluginWrapper.getPluginDescriptor().getPluginId(), e);
+            logger.error("Unloading {} due to exception during disable.", pluginWrapper.getPluginDescriptor().getPluginId());
             pluginWrapper.unload();
             moduleStates.put(module.getId(), ModuleState.INVALID);
             return;
         }
 
         moduleStates.put(module.getId(), ModuleState.DISABLED);
-        logger.info(String.format("Module %s has been disabled!", module.getId()));
+        logger.info("Module {} has been disabled!", module.getId());
     }
 
     @Override

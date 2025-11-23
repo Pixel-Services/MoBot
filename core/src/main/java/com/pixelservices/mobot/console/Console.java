@@ -4,8 +4,8 @@ import com.pixelservices.mobot.MoBot;
 import com.pixelservices.mobot.console.impl.ModuleCommand;
 import com.pixelservices.mobot.console.impl.SetTokenCommand;
 import com.pixelservices.mobot.console.impl.VersionCommand;
-import com.pixelservices.logger.Logger;
-import com.pixelservices.logger.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +40,10 @@ public class Console {
             try {
                 command.execute(args, logger);
             } catch (Exception e) {
-                logger.error("An error occurred while executing command: " + name, e);
+                logger.error("An error occurred while executing command: {}", name, e);
             }
         } else {
-            logger.warn("Unknown command: " + name);
+            logger.warn("Unknown command: {}", name);
         }
     }
 
@@ -55,7 +55,7 @@ public class Console {
         registerCommand("help", (args, logger) -> {
             logger.info("Available commands:");
             for (String command : commands.keySet()) {
-                logger.info(" - " + command);
+                logger.info(" - {}", command);
             }
         });
         registerCommand("clear", (args, logger) -> consoleUtil.clearConsole());
@@ -67,7 +67,7 @@ public class Console {
         });
         registerCommand("module", new ModuleCommand(moBot.getTaskScheduler(), moBot.getModuleManager()));
         registerCommand("version", new VersionCommand());
-        logger.info("Registered " + commands.size() + " CLI-commands");
+        logger.info("Registered {} CLI-commands", commands.size());
     }
 
     private void listenForCommands() {

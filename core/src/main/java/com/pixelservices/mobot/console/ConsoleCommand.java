@@ -1,6 +1,6 @@
 package com.pixelservices.mobot.console;
 
-import com.pixelservices.logger.Logger;
+import org.slf4j.Logger;
 
 public interface ConsoleCommand {
     void execute(String[] args, Logger logger);

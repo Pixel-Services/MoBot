@@ -1,3 +1,19 @@
 <configuration>
-    <root level="OFF" />
+    <!-- Console appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{HH:mm:ss}] [%-10class{0}] [%-5level] : %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Allow only critical (ERROR) logging from JDA, block warnings and below -->
+    <logger name="net.dv8tion.jda" level="ERROR" />
+    
+    <!-- Allow jonion logging -->
+    <logger name="dev.siea.jonion" level="INFO" />
+    
+    <!-- Root logger level -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
 </configuration>

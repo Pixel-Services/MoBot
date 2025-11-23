@@ -1,13 +1,11 @@
 package com.pixelservices.mobot.utils;
 
-import com.pixelservices.config.ConfigFactory;
-import com.pixelservices.config.YamlConfig;
-import com.pixelservices.logger.Logger;
-import com.pixelservices.logger.LoggerFactory;
+import dev.siea.jonion.configuration.YamlPluginConfig;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -16,7 +14,7 @@ public class UpdateChecker {
     private final String currentVersion;
 
     public UpdateChecker() {
-        YamlConfig config = ConfigFactory.getYamlConfig("meta.yml");
+        YamlPluginConfig config = ConfigUtil.getBotConfig();
         currentVersion = config.getString("version");
     }
 
@@ -48,7 +46,7 @@ public class UpdateChecker {
 
                 return json.getString("tag_name").substring(1);
             } else {
-                logger.error("Failed to check for updates. HTTP response code: " + connection.getResponseCode());
+                logger.error("Failed to check for updates. HTTP response code: {}", connection.getResponseCode());
             }
         } catch (Exception e) {
             logger.error("An error occurred while checking for updates.", e);

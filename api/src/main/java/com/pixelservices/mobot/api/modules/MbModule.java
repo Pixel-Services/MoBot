@@ -7,9 +7,8 @@ import com.pixelservices.mobot.api.env.FinalizedBotEnvironment;
 import com.pixelservices.mobot.api.env.PrimitiveBotEnvironment;
 import com.pixelservices.mobot.api.modules.listener.ListenerBridge;
 import com.pixelservices.mobot.api.modules.listener.ModuleListener;
-import com.pixelservices.mobot.api.scheduler.ScheduledTask;
 import com.pixelservices.mobot.api.scheduler.TaskScheduler;
-import com.pixelservices.plugin.Plugin;
+import dev.siea.jonion.Plugin;
 
 public class MbModule extends Plugin {
 

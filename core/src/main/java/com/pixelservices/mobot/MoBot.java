@@ -2,22 +2,20 @@ package com.pixelservices.mobot;
 
 import com.pixelservices.mobot.api.env.FinalizedBotEnvironment;
 import com.pixelservices.mobot.api.env.PrimitiveBotEnvironment;
-import com.pixelservices.mobot.api.scheduler.TaskScheduler;
 import com.pixelservices.mobot.commands.CommandManager;
-import com.pixelservices.config.ConfigFactory;
-import com.pixelservices.config.YamlConfig;
 import com.pixelservices.mobot.console.Console;
 import com.pixelservices.mobot.exceptions.BotStartupException;
-import com.pixelservices.logger.Logger;
-import com.pixelservices.logger.LoggerFactory;
 import com.pixelservices.mobot.modules.ModuleManager;
 import com.pixelservices.mobot.scheduler.BotTaskScheduler;
+import com.pixelservices.mobot.utils.ConfigUtil;
 import com.pixelservices.mobot.utils.UpdateChecker;
+import dev.siea.jonion.configuration.YamlPluginConfig;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -72,7 +70,7 @@ public class MoBot {
         ShardManager shardManager;
         try {
             shardManager = enableBot(builder);
-            logger.info("Successfully enabled shard manager with " + shardManager.getShardsTotal() + " shards.");
+            logger.info("Successfully enabled shard manager with {} shards.", shardManager.getShardsTotal());
         } catch (BotStartupException e) {
             logger.error("Bot startup failed", e);
             return;
@@ -93,16 +91,16 @@ public class MoBot {
         console.registerDefaults();
 
         // Log the startup time
-        logger.info("MoBot startup completed in " + Duration.between(startTime, Instant.now()).toSeconds() + " seconds.");
+        logger.info("MoBot startup completed in {} seconds.", Duration.between(startTime, Instant.now()).toSeconds());
 
         // Check for updates
-        YamlConfig yamlConfig = ConfigFactory.getYamlConfig("bot.yml");
+        YamlPluginConfig yamlConfig = ConfigUtil.getBotConfig();
         if (yamlConfig.getBoolean("check-updates")) {
             UpdateChecker updateChecker = new UpdateChecker();
             if (updateChecker.isLatest()) {
-                logger.info("You are using the latest version of MoBot: " + updateChecker.getCurrentVersion() + ".");
+                logger.info("You are using the latest version of MoBot: {}.", updateChecker.getCurrentVersion());
             } else {
-                logger.info("A new version of MoBot is available: " + updateChecker.getLatestVersion() + ". You are currently on version " + updateChecker.getCurrentVersion() + ".");
+                logger.info("A new version of MoBot is available: {}. You are currently on version {}.", updateChecker.getLatestVersion(), updateChecker.getCurrentVersion());
             }
         }
     }
@@ -149,10 +147,10 @@ public class MoBot {
     }
 
     private DefaultShardManagerBuilder getBuilder() {
-        YamlConfig yamlConfig = ConfigFactory.getYamlConfig("bot.yml");
+        YamlPluginConfig yamlConfig = ConfigUtil.getBotConfig();
         yamlConfig.save();
         String token = yamlConfig.getString("token");
-        List<String> gateWayIntents = yamlConfig.getStringList("gateway-intents");
+        List<String> gateWayIntents = yamlConfig.getYamlConfiguration().getStringList("gateway-intents");
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
         for (String intent : gateWayIntents) {
             builder.enableIntents(GatewayIntent.valueOf(intent));
@@ -164,7 +162,7 @@ public class MoBot {
         ShardManager shardManager = null;
         Scanner scanner = new Scanner(System.in);
 
-        YamlConfig yamlConfig = ConfigFactory.getYamlConfig("bot.yml");
+        YamlPluginConfig yamlConfig = ConfigUtil.getBotConfig();
 
         String token = yamlConfig.getString("token");
 
