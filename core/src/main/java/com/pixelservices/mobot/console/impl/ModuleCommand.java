@@ -1,5 +1,6 @@
 package com.pixelservices.mobot.console.impl;
 
+
 import com.pixelservices.mobot.api.modules.MbModule;
 import com.pixelservices.mobot.api.modules.ModuleState;
 import com.pixelservices.mobot.api.scheduler.ScheduledTask;
@@ -78,9 +79,8 @@ public class ModuleCommand implements ConsoleCommand {
                 return;
             }
 
-            logger.info(String.format("%s Scheduled Tasks:", module.getId()));
-            logger.info(String.format("Total: %s, Async: %s, Repeating: %s", moduleTasks.size(),
-                    moduleTasks.stream().filter(ScheduledTask::isAsync).count(), moduleTasks.stream().filter(ScheduledTask::isRepeating).count()));
+            logger.info("{} Scheduled Tasks:", module.getId());
+            logger.info("Total: {}, Async: {}, Repeating: {}", moduleTasks.size(), moduleTasks.stream().filter(ScheduledTask::isAsync).count(), moduleTasks.stream().filter(ScheduledTask::isRepeating).count());
             return;
         }
 
